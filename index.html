@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUTOSAR Engineering Mastery — Course Portal</title>
+<script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+<style>
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes shimmer { 0%{background-position:200% center} 100%{background-position:-200% center} }
+  @keyframes pulse2 { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  @keyframes countUp { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
+
+  .fade-up { animation: fadeUp 0.5s ease both; }
+  .fade-up-1 { animation-delay: 0.05s; }
+  .fade-up-2 { animation-delay: 0.1s; }
+  .fade-up-3 { animation-delay: 0.15s; }
+  .fade-up-4 { animation-delay: 0.2s; }
+  .fade-up-5 { animation-delay: 0.25s; }
+  .fade-up-6 { animation-delay: 0.30s; }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #34d399 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+  }
+
+  .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+  .card-hover:hover { transform: translateY(-3px); }
+
+  .progress-ring { transition: stroke-dashoffset 1s ease; }
+
+  .badge-pill { font-size: 10px; padding: 2px 8px; border-radius: 9999px; font-weight: 600; }
+
+  .mod-locked { opacity: 0.55; pointer-events: none; }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .quiz-opt { transition: background 0.15s, border-color 0.15s; cursor: pointer; }
+  .quiz-opt:hover { background: color-mix(in srgb, var(--primary) 10%, transparent); border-color: var(--primary); }
+  .quiz-opt.correct { background: rgba(74,222,128,0.15); border-color: #4ade80; }
+  .quiz-opt.wrong { background: rgba(248,113,113,0.15); border-color: #f87171; }
+
+  .tab-active { border-bottom: 2px solid var(--primary); color: var(--primary) !important; }
+
+  .skill-bar { transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+</style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!--  HERO HEADER                                       -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="bg-[var(--sidebar)] border-b border-[var(--border)]">
+  <div class="px-5 py-4">
+    <div class="flex items-start justify-between">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-2xl">🚗</span>
+          <h1 class="text-base font-bold gradient-text">AUTOSAR Engineering Mastery</h1>
+        </div>
+        <p class="text-xs text-[var(--muted-foreground)]">Classic + Adaptive Platform · 6 Modules · 40 Hours · Industrial-Grade Training</p>
+        <div class="flex items-center gap-3 mt-2">
+          <span class="badge-pill bg-blue-500/15 text-blue-400">📚 6 Modules</span>
+          <span class="badge-pill bg-green-500/15 text-green-400">🧪 18 Labs</span>
+          <span class="badge-pill bg-purple-500/15 text-purple-400">🎯 60 Quiz Questions</span>
+          <span class="badge-pill bg-yellow-500/15 text-yellow-400">🏆 Certificate</span>
+        </div>
+      </div>
+      <div class="text-center">
+        <svg width="60" height="60" viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="26" fill="none" stroke="var(--border)" stroke-width="5"/>
+          <circle id="hero-ring" cx="30" cy="30" r="26" fill="none" stroke="var(--primary)"
+            stroke-width="5" stroke-dasharray="163" stroke-dashoffset="163"
+            stroke-linecap="round" transform="rotate(-90 30 30)"
+            class="progress-ring"/>
+        </svg>
+        <div id="hero-pct" class="text-xs font-bold -mt-10 text-[var(--primary)]">0%</div>
+        <div class="text-xs text-[var(--muted-foreground)] mt-6">Progress</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav Tabs -->
+  <div class="px-5 flex gap-4 overflow-x-auto">
+    <button onclick="showTab('modules')" id="nav-modules" class="tab-active text-xs font-medium py-2 border-b-2 border-[var(--primary)] whitespace-nowrap text-[var(--primary)]">🗂 Modules</button>
+    <button onclick="showTab('quiz')" id="nav-quiz" class="text-xs font-medium py-2 border-b-2 border-transparent text-[var(--muted-foreground)] whitespace-nowrap">📝 Quiz Bank</button>
+    <button onclick="showTab('skills')" id="nav-skills" class="text-xs font-medium py-2 border-b-2 border-transparent text-[var(--muted-foreground)] whitespace-nowrap">📊 Skill Tracker</button>
+    <button onclick="showTab('about')" id="nav-about" class="text-xs font-medium py-2 border-b-2 border-transparent text-[var(--muted-foreground)] whitespace-nowrap">ℹ️ About</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!--  CONTENT AREA                                      -->
+<!-- ══════════════════════════════════════════════════ -->
+<div id="content" class="p-4 overflow-y-auto" style="max-height: calc(100vh - 130px)">
+
+  <!-- ── MODULES TAB ── -->
+  <div id="tab-modules">
+    <!-- Stats Row -->
+    <div class="grid grid-cols-4 gap-2 mb-4">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center fade-up fade-up-1">
+        <div id="stat-completed" class="text-lg font-bold text-[var(--primary)]">0</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Completed</div>
+      </div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center fade-up fade-up-2">
+        <div id="stat-labs" class="text-lg font-bold text-green-400">0</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Labs Done</div>
+      </div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center fade-up fade-up-3">
+        <div id="stat-score" class="text-lg font-bold text-purple-400">—</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Quiz Score</div>
+      </div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center fade-up fade-up-4">
+        <div id="stat-hrs" class="text-lg font-bold text-yellow-400">0h</div>
+        <div class="text-xs text-[var(--muted-foreground)]">Time Spent</div>
+      </div>
+    </div>
+
+    <!-- Module Cards -->
+    <div id="module-cards" class="space-y-2">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- ── QUIZ TAB ── -->
+  <div id="tab-quiz" class="hidden">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 mb-3">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <h3 class="text-sm font-bold" id="quiz-module-name">Select a Module Quiz</h3>
+          <p class="text-xs text-[var(--muted-foreground)]" id="quiz-progress-label">Question 0 of 0</p>
+        </div>
+        <div class="flex gap-2">
+          <span id="quiz-score-badge" class="badge-pill bg-green-500/15 text-green-400">Score: 0/0</span>
+        </div>
+      </div>
+
+      <!-- Module selector -->
+      <div class="flex flex-wrap gap-1.5 mb-4" id="quiz-module-selector">
+        <!-- rendered by JS -->
+      </div>
+
+      <!-- Question -->
+      <div id="quiz-question-area" class="hidden">
+        <div class="bg-[var(--sidebar)] rounded-lg p-3 mb-3">
+          <div class="text-xs font-bold mb-1 text-[var(--muted-foreground)]" id="q-num">Q1</div>
+          <p class="text-sm font-medium" id="q-text">Loading…</p>
+        </div>
+        <div id="q-options" class="space-y-2"><!-- options here --></div>
+        <div id="q-feedback" class="hidden mt-3 text-xs rounded-lg p-2.5 border"></div>
+        <div class="flex gap-2 mt-3">
+          <button onclick="nextQuestion()" id="btn-next" class="hidden bg-[var(--primary)] text-[var(--primary-foreground)] text-xs px-4 py-1.5 rounded font-medium">Next →</button>
+          <button onclick="restartQuiz()" id="btn-restart" class="hidden border border-[var(--border)] text-xs px-4 py-1.5 rounded">↺ Restart</button>
+        </div>
+      </div>
+      <div id="quiz-empty" class="text-center text-[var(--muted-foreground)] text-xs py-6">
+        Select a module above to start the quiz
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SKILLS TAB ── -->
+  <div id="tab-skills" class="hidden">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 mb-3">
+      <h3 class="text-sm font-bold mb-3">🎯 AUTOSAR Skill Tracker</h3>
+      <div id="skills-list" class="space-y-3">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4">
+      <h3 class="text-sm font-bold mb-3">📋 Learning Path Completion</h3>
+      <div class="space-y-2" id="learning-path"><!-- rendered by JS --></div>
+    </div>
+  </div>
+
+  <!-- ── ABOUT TAB ── -->
+  <div id="tab-about" class="hidden">
+    <div class="space-y-3">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 fade-up">
+        <h3 class="text-sm font-bold mb-2">🎓 Course Overview</h3>
+        <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+          This AUTOSAR Engineering Mastery course takes engineers from zero AUTOSAR knowledge to
+          full-stack implementation capability. Every concept is reinforced with a working simulation
+          exercise — no theory-only modules. The course mirrors real industrial workflows used with
+          Vector DaVinci, EB Tresos, and COVESA vsomeip.
+        </p>
+      </div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 fade-up">
+        <h3 class="text-sm font-bold mb-3">🛠 Tools Covered</h3>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-[var(--sidebar)] rounded p-2 text-xs">
+            <div class="font-semibold">Classic Platform</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">DaVinci Developer, EB Tresos, ETAS RTA-OS, Vector CANoe</div>
+          </div>
+          <div class="bg-[var(--sidebar)] rounded p-2 text-xs">
+            <div class="font-semibold">Adaptive Platform</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">vsomeip (COVESA), ara::com mock, ETAS VRTE, AUTOSAR Builder</div>
+          </div>
+          <div class="bg-[var(--sidebar)] rounded p-2 text-xs">
+            <div class="font-semibold">Open Source</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Trampoline RTOS, FreeOSEK, python-udsoncan, LINalyzer</div>
+          </div>
+          <div class="bg-[var(--sidebar)] rounded p-2 text-xs">
+            <div class="font-semibold">Hardware Targets</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Infineon Tricore, NXP S32K, Renesas RH850, ARM Cortex-M</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 fade-up">
+        <h3 class="text-sm font-bold mb-2">📐 AUTOSAR Standards</h3>
+        <div class="space-y-1.5 text-xs">
+          <div class="flex items-center gap-2"><span class="badge-pill bg-blue-500/15 text-blue-400">R4.4</span><span class="text-[var(--muted-foreground)]">AUTOSAR Classic Platform (primary)</span></div>
+          <div class="flex items-center gap-2"><span class="badge-pill bg-purple-500/15 text-purple-400">R23-11</span><span class="text-[var(--muted-foreground)]">AUTOSAR Adaptive Platform</span></div>
+          <div class="flex items-center gap-2"><span class="badge-pill bg-green-500/15 text-green-400">ISO 14229</span><span class="text-[var(--muted-foreground)]">UDS Diagnostic Protocol</span></div>
+          <div class="flex items-center gap-2"><span class="badge-pill bg-yellow-500/15 text-yellow-400">ISO 17987</span><span class="text-[var(--muted-foreground)]">LIN Bus Standard</span></div>
+          <div class="flex items-center gap-2"><span class="badge-pill bg-red-500/15 text-red-400">SOME/IP</span><span class="text-[var(--muted-foreground)]">PRS_SOMEIPProtocol (Adaptive)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end content -->
+
+<!-- ══════════════════════════════════════════════════ -->
+<!--  MODULE DETAIL MODAL                               -->
+<!-- ══════════════════════════════════════════════════ -->
+<div id="modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4" onclick="closeModal(event)">
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl max-w-lg w-full max-h-[80vh] overflow-y-auto shadow-2xl" onclick="event.stopPropagation()">
+    <div id="modal-content" class="p-5"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!--  JAVASCRIPT                                        -->
+<!-- ══════════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────── */
+/*  DATA                                   */
+/* ─────────────────────────────────────── */
+const modules = [
+  {
+    id: 0,
+    icon: '🗂',
+    title: 'ARXML & SWC Port Configuration',
+    week: 'Week 1',
+    hours: 6,
+    difficulty: 'Beginner',
+    diffColor: 'green',
+    status: 'available',
+    progress: 0,
+    labsDone: 0,
+    totalLabs: 3,
+    tags: ['ARXML', 'SWC', 'RTE', 'Ports'],
+    description: 'Learn the AUTOSAR meta-model, write SWC descriptions in ARXML, configure sender-receiver and client-server port interfaces, and map runnables to execution contexts.',
+    objectives: [
+      'Understand AUTOSAR meta-model (M1/M2/M3 layers)',
+      'Write and validate ARXML SWC descriptions',
+      'Define SenderReceiver and ClientServer port interfaces',
+      'Map runnables and inspect generated RTE headers',
+      'Compose multiple SWCs into an ECU topology',
+    ],
+    labs: [
+      { name: 'Lab 1A: Define SpeedSensor SWC with P/R ports', done: false },
+      { name: 'Lab 1B: Connect SWCs in composition', done: false },
+      { name: 'Lab 1C: Validate ARXML + inspect generated RTE', done: false },
+    ],
+    tools: ['DaVinci Developer', 'Eclipse AASX', 'Course ARXML Simulator'],
+  },
+  {
+    id: 1,
+    icon: '⏱',
+    title: 'OS Configuration: Tasks, Alarms & ISRs',
+    week: 'Week 2',
+    hours: 6,
+    difficulty: 'Beginner',
+    diffColor: 'green',
+    status: 'available',
+    progress: 0,
+    labsDone: 0,
+    totalLabs: 3,
+    tags: ['OSEK', 'Tasks', 'ISR', 'Alarms', 'OIL'],
+    description: 'Configure AUTOSAR OS tasks, set priorities, define alarms and counters, map ISRs to hardware interrupts, and observe real-time scheduling with preemption and deadline analysis.',
+    objectives: [
+      'Distinguish Basic/Extended tasks and ISR Category 1/2',
+      'Write OIL configuration for tasks and alarms',
+      'Understand priority ceiling and resource management',
+      'Detect and resolve deadline misses and priority inversion',
+      'Map SWC runnables to OS task bodies',
+    ],
+    labs: [
+      { name: 'Lab 2A: Configure 3 tasks + 2 alarms in OIL', done: false },
+      { name: 'Lab 2B: Observe Gantt chart — normal operation', done: false },
+      { name: 'Lab 2C: Inject overload and analyse deadline miss', done: false },
+    ],
+    tools: ['Trampoline RTOS', 'ETAS RTA-OS', 'Course OS Scheduler Simulator'],
+  },
+  {
+    id: 2,
+    icon: '💾',
+    title: 'NvM: EEPROM Block Lifecycle',
+    week: 'Week 3',
+    hours: 7,
+    difficulty: 'Intermediate',
+    diffColor: 'blue',
+    status: 'available',
+    progress: 0,
+    labsDone: 0,
+    totalLabs: 3,
+    tags: ['NvM', 'Flash', 'EEPROM', 'MemIf', 'Fee', 'Ea'],
+    description: 'Master the AUTOSAR NvM memory stack from block configuration to the complete ECU startup ReadAll and shutdown WriteAll lifecycle. Simulate power-cut recovery using redundant blocks.',
+    objectives: [
+      'Understand NvM block types: NATIVE, REDUNDANT, DATASET',
+      'Configure MemIf, Fee (Flash) and Ea (EEPROM) layers',
+      'Implement ReadAll startup and WriteAll shutdown sequences',
+      'Handle job result callbacks and error status polling',
+      'Recover data after simulated power loss',
+    ],
+    labs: [
+      { name: 'Lab 3A: Configure 3 NvM blocks (Native + Redundant)', done: false },
+      { name: 'Lab 3B: Run startup ReadAll — verify all blocks load', done: false },
+      { name: 'Lab 3C: Simulate power cut — observe redundant recovery', done: false },
+    ],
+    tools: ['EB Tresos NvM Plugin', 'Course NvM Lifecycle Simulator'],
+  },
+  {
+    id: 3,
+    icon: '🔧',
+    title: 'UDS Diagnostics: Session & Routine Control',
+    week: 'Week 4',
+    hours: 8,
+    difficulty: 'Intermediate',
+    diffColor: 'blue',
+    status: 'available',
+    progress: 0,
+    labsDone: 0,
+    totalLabs: 3,
+    tags: ['UDS', 'ISO14229', 'DCM', 'DEM', 'DTC', '0x10', '0x27', '0x31'],
+    description: 'Implement the full UDS diagnostic stack: session management (0x10), security access (0x27), read/write data by identifier (0x22/0x2E), routine control (0x31), and DTC management (0x19/0x14).',
+    objectives: [
+      'Navigate the UDS session hierarchy (Default → Extended → Programming)',
+      'Implement seed/key security access algorithm (0x27)',
+      'Read and write DIDs with proper scaling (0x22, 0x2E)',
+      'Execute and query routines with PENDING state handling (0x31)',
+      'Store, read, and clear DTCs using DEM API',
+    ],
+    labs: [
+      { name: 'Lab 4A: Full session escalation flow', done: false },
+      { name: 'Lab 4B: Security access with correct/wrong key', done: false },
+      { name: 'Lab 4C: Routine 0x31 — Self-test with async result', done: false },
+    ],
+    tools: ['Vector CANoe + CAPL', 'python-udsoncan', 'Course UDS Console'],
+  },
+  {
+    id: 4,
+    icon: '📡',
+    title: 'LIN Stack: Master/Slave Communication',
+    week: 'Week 5',
+    hours: 6,
+    difficulty: 'Intermediate',
+    diffColor: 'blue',
+    status: 'available',
+    progress: 0,
+    labsDone: 0,
+    totalLabs: 3,
+    tags: ['LIN', 'ISO17987', 'LinIf', 'LinTp', 'Schedule'],
+    description: 'Configure the complete AUTOSAR LIN stack from schedule table definition to slave response. Understand frame structure (BREAK, SYNC, PID, DATA, checksum) and error handling.',
+    objectives: [
+      'Understand LIN frame structure and PID calculation',
+      'Configure master schedule table in ARXML',
+      'Implement slave response callbacks (LinIf_HeaderIndication)',
+      'Handle LIN error events (no-response, checksum error, timeout)',
+      'Map LIN signals to AUTOSAR COM layer',
+    ],
+    labs: [
+      { name: 'Lab 5A: Configure 3-frame schedule table', done: false },
+      { name: 'Lab 5B: Observe frame cycling and signal values', done: false },
+      { name: 'Lab 5C: Inject checksum error — observe error handling', done: false },
+    ],
+    tools: ['Vector CANoe LIN', 'LINalyzer', 'Course LIN Frame Analyzer'],
+  },
+  {
+    id: 5,
+    icon: '🌐',
+    title: 'AUTOSAR Adaptive: ara::com & SOME/IP',
+    week: 'Week 6',
+    hours: 7,
+    difficulty: 'Advanced',
+    diffColor: 'purple',
+    status: 'available',
+    progress: 0,
+    labsDone: 0,
+    totalLabs: 3,
+    tags: ['Adaptive', 'SOME/IP', 'ara::com', 'SD', 'C++17'],
+    description: 'Implement AUTOSAR Adaptive Platform services using ara::com with SOME/IP transport. Configure service manifests, implement skeleton (server) and proxy (client), and observe service discovery.',
+    objectives: [
+      'Contrast Classic CP vs Adaptive AP architecture',
+      'Write SOME/IP service manifest JSON',
+      'Implement a service skeleton (server) using ara::com C++ API',
+      'Consume a service using proxy with method calls and event subscription',
+      'Observe SOME/IP Service Discovery (Offer/Find/Subscribe)',
+    ],
+    labs: [
+      { name: 'Lab 6A: Write SpeedService manifest + skeleton', done: false },
+      { name: 'Lab 6B: Client proxy — FindService + method call', done: false },
+      { name: 'Lab 6C: Event subscription + simulated network failure', done: false },
+    ],
+    tools: ['vsomeip (COVESA)', 'ETAS VRTE', 'Course SOME/IP Simulator'],
+  },
+];
+
+/* ─────────────────────────────────────── */
+/*  Quiz Data                              */
+/* ─────────────────────────────────────── */
+const quizData = {
+  0: [
+    { q: 'In AUTOSAR, a P-PORT is used to:', opts: ['Receive data from another SWC', 'Provide/send data to other SWCs', 'Configure hardware peripherals', 'Define OS task priorities'], ans: 1, exp: 'A P-PORT (Provider Port) is used by a SWC to provide/send data or services to other SWCs. R-PORT (Receiver Port) is used to receive.' },
+    { q: 'Which ARXML element defines the execution unit inside a SWC?', opts: ['PORT-PROTOTYPE', 'RUNNABLE-ENTITY', 'DATA-ELEMENT', 'COMPOSITION-TYPE'], ans: 1, exp: 'RUNNABLE-ENTITY is the executable unit within a SWC that is mapped to OS tasks. It contains data read/write access definitions.' },
+    { q: 'RTE_E_OK is returned by Rte_Read when:', opts: ['Data was not available', 'Read operation succeeded', 'Queue was full', 'Port is disconnected'], ans: 1, exp: 'RTE_E_OK indicates the read was successful and the data is valid. Other codes like RTE_E_INVALID indicate the data is not available.' },
+    { q: 'SenderReceiver interface supports which communication pattern?', opts: ['Only synchronous call', 'Event-driven with PUSH/PULL mode', 'Only point-to-point TCP', 'Broadcast only'], ans: 1, exp: 'SR interfaces support PUSH (sender writes, receiver reads) and PULL (receiver requests) modes with queued or last-value semantics.' },
+    { q: 'ARXML is based on which markup language?', opts: ['JSON', 'YAML', 'XML', 'TOML'], ans: 2, exp: 'ARXML (AUTOSAR XML) is an XML-based format that describes the AUTOSAR model elements. It follows a strict schema defined by the AUTOSAR consortium.' },
+  ],
+  1: [
+    { q: 'An ISR Category 2 in AUTOSAR OS can:', opts: ['Not call any OS services', 'Call OS API functions like GetResource()', 'Run at the lowest priority', 'Only be triggered by software'], ans: 1, exp: 'Category 2 ISRs can call OS API functions. Category 1 ISRs are very fast, cannot call any OS services, and have minimal overhead.' },
+    { q: 'In OIL configuration, CYCLETIME in an ALARM means:', opts: ['Maximum task runtime', 'How often the alarm repeats in ticks', 'Priority of the alarm', 'Number of task activations'], ans: 1, exp: 'CYCLETIME defines the period in counter ticks between alarm activations. ALARMTIME is the initial delay before the first activation.' },
+    { q: 'What causes a deadline miss in AUTOSAR OS?', opts: ['Task priority too high', 'Task runtime exceeds its period', 'Too many ISR activations', 'Alarm misconfiguration only'], ans: 1, exp: 'A deadline miss occurs when a task\'s execution time exceeds its period, meaning the next activation arrives before the current one finishes.' },
+    { q: 'Priority Ceiling Protocol in AUTOSAR OS protects against:', opts: ['Stack overflow', 'Priority inversion when sharing resources', 'ISR flooding', 'Alarm expiry'], ans: 1, exp: 'The Priority Ceiling Protocol prevents priority inversion by raising a task\'s priority to the ceiling of all resources it holds.' },
+    { q: 'Which function terminates a Basic Task in AUTOSAR OS?', opts: ['ExitTask()', 'TerminateTask()', 'ChainTask()', 'SuspendTask()'], ans: 1, exp: 'TerminateTask() is the mandatory call at the end of every Basic Task body. ChainTask() terminates the current task and activates another.' },
+  ],
+  2: [
+    { q: 'A REDUNDANT NvM block stores how many copies?', opts: ['1', '2', '3', 'Configurable'], ans: 1, exp: 'A REDUNDANT block stores 2 copies in different memory locations. If one is corrupted (e.g., power loss), the other is used for recovery.' },
+    { q: 'NvM_ReadAll() is typically called during:', opts: ['Task initialization', 'ECU startup sequence (EcuM)', 'Every 100ms background task', 'On DTC occurrence'], ans: 1, exp: 'NvM_ReadAll() is called during the ECU startup sequence managed by EcuM (AL_DriverInitTwo) to restore all NvM blocks from flash to RAM.' },
+    { q: 'NVM_REQ_NV_INVALIDATED status means:', opts: ['Write failed', 'Block was never written or explicitly invalidated — use defaults', 'Hardware fault detected', 'Block is currently being read'], ans: 1, exp: 'NVM_REQ_NV_INVALIDATED means the block has no valid data (first boot or explicitly invalidated). The application should use default values.' },
+    { q: 'Fee is the AUTOSAR module for:', opts: ['EEPROM emulation in Flash', 'Direct EEPROM access', 'Flash programming', 'NvM job scheduling'], ans: 0, exp: 'Fee (Flash EEPROM Emulation) emulates EEPROM behavior in Flash memory. Ea (EEPROM Abstraction) provides direct EEPROM access.' },
+    { q: 'NvM_MainFunction() must be called:', opts: ['Only during startup', 'Periodically in a background task to process the NvM job queue', 'Only during shutdown', 'Once per NvM_WriteBlock() call'], ans: 1, exp: 'NvM_MainFunction() drives the NvM state machine and must be called periodically (typically in a 5ms or background task) to process queued read/write jobs.' },
+  ],
+  3: [
+    { q: 'UDS Service 0x10 is used for:', opts: ['Reading DTCs', 'Session Control (switching diagnostic sessions)', 'Reading Data by Identifier', 'Security Access'], ans: 1, exp: '0x10 (DiagnosticSessionControl) changes the active diagnostic session. Sub-functions: 0x01=Default, 0x02=Programming, 0x03=Extended.' },
+    { q: 'In UDS Security Access (0x27), what is sent first?', opts: ['Key', 'Seed (random value from ECU)', 'Routine result', 'Session sub-function'], ans: 1, exp: 'The tester first requests a Seed (sub-function 0x01). The ECU generates a random seed. The tester computes Key=f(seed) and sends it back.' },
+    { q: 'UDS NRC (Negative Response Code) 0x33 means:', opts: ['Request out of range', 'Security access denied', 'Conditions not correct', 'Sub-function not supported'], ans: 1, exp: '0x33 (securityAccessDenied) is returned when the requested service requires a higher security level than currently active.' },
+    { q: 'Routine Control sub-function 0x03 means:', opts: ['Start routine', 'Stop routine', 'Request routine results', 'Clear routine'], ans: 2, exp: 'Sub-function 0x03 (requestRoutineResults) retrieves the result of the last routine execution. 0x01=start, 0x02=stop.' },
+    { q: 'UDS DTC is cleared using service:', opts: ['0x14 clearDiagnosticInformation', '0x19 readDTCInformation', '0x31 routineControl', '0x27 securityAccess'], ans: 0, exp: '0x14 (ClearDiagnosticInformation) clears stored DTCs. 0x19 reads DTCs. The group ID 0xFFFFFF clears all DTCs.' },
+  ],
+  4: [
+    { q: 'LIN uses how many wires for communication?', opts: ['2 (differential pair like CAN)', '1 (single wire + ground)', '4 (full duplex UART)', '3 (RS-485 style)'], ans: 1, exp: 'LIN uses a single wire bus plus ground. This makes it very cost-effective for low-speed, low-priority networks like window motors and HVAC.' },
+    { q: 'In LIN, who controls the schedule table?', opts: ['Any node on the bus', 'The Master node only', 'The Slave with highest priority', 'Both Master and Slave equally'], ans: 1, exp: 'In LIN, the Master node exclusively controls the schedule table — it decides when each frame is transmitted by sending the header (BREAK+SYNC+PID).' },
+    { q: 'LIN PID consists of:', opts: ['8-bit frame ID only', '6-bit frame ID + 2 parity bits', '8-bit frame ID + 8-bit length', '4-bit ID + 4-bit flags'], ans: 1, exp: 'PID (Protected ID) = 6-bit frame ID (bits 0-5) + 2 parity bits (P0, P1). Parity protects against PID corruption on the bus.' },
+    { q: 'A LIN enhanced checksum includes:', opts: ['Only data bytes', 'Data bytes + PID byte', 'Only the PID byte', 'Frame header bytes only'], ans: 1, exp: 'Enhanced checksum (LIN 2.x) covers both PID and data bytes. Classic checksum (LIN 1.x) covers only data bytes.' },
+    { q: 'Maximum LIN bus speed is:', opts: ['100 kbit/s', '20 kbit/s', '1 Mbit/s', '500 kbit/s'], ans: 1, exp: 'LIN maximum speed is 20 kbit/s (LIN 2.x). This is intentionally low to enable single-wire, low-cost implementation without complex transceivers.' },
+  ],
+  5: [
+    { q: 'In AUTOSAR Adaptive, ara::com provides:', opts: ['CAN signal routing', 'Service-oriented middleware for inter-ECU communication', 'OS task scheduling', 'Flash memory abstraction'], ans: 1, exp: 'ara::com is the Communication Management API in the Adaptive Platform. It provides service-oriented communication using methods, events, and fields.' },
+    { q: 'SOME/IP Service Discovery (SD) uses which message to announce a service?', opts: ['SD Find', 'SD Offer', 'SD Subscribe', 'SD Notify'], ans: 1, exp: 'SD OfferService is sent by the server (provider) to announce that a service is available. Clients respond with FindService to locate it.' },
+    { q: 'In ara::com, a skeleton represents:', opts: ['The client/consumer side', 'The server/provider implementation', 'The service manifest', 'The transport protocol'], ans: 1, exp: 'The Skeleton is the server-side implementation of a service. The Proxy is the client-side handle. Both are generated from the service manifest.' },
+    { q: 'Adaptive Platform processes run on:', opts: ['AUTOSAR OS (OSEK)', 'POSIX-compliant OS like Linux or QNX', 'Bare metal without OS', 'FreeRTOS only'], ans: 1, exp: 'Adaptive Platform runs on POSIX-compliant operating systems. This allows use of standard Linux/QNX, enabling OTA updates and dynamic deployment.' },
+    { q: 'SOME/IP fields support:', opts: ['Read-only access only', 'Getter, Setter, and Notifier operations', 'Only event-based notification', 'Write-only operations'], ans: 1, exp: 'SOME/IP Fields support Getter (read current value), Setter (write new value), and Notifier (subscribe to changes) — combining data and events in one construct.' },
+  ],
+};
+
+/* ─────────────────────────────────────── */
+/*  Skills Data                            */
+/* ─────────────────────────────────────── */
+const skills = [
+  { name: 'ARXML Configuration',         mod: 0, icon: '📄' },
+  { name: 'RTE Interface Design',         mod: 0, icon: '🔌' },
+  { name: 'OSEK/AUTOSAR OS',             mod: 1, icon: '⏱' },
+  { name: 'Task Scheduling & Timing',    mod: 1, icon: '📊' },
+  { name: 'NvM Memory Management',       mod: 2, icon: '💾' },
+  { name: 'Flash/EEPROM Abstraction',    mod: 2, icon: '🗄' },
+  { name: 'UDS Diagnostics (ISO 14229)', mod: 3, icon: '🔧' },
+  { name: 'DTC & DEM Management',        mod: 3, icon: '⚠' },
+  { name: 'LIN Protocol (ISO 17987)',    mod: 4, icon: '📡' },
+  { name: 'ComStack Integration',        mod: 4, icon: '🔗' },
+  { name: 'ara::com Middleware',         mod: 5, icon: '🌐' },
+  { name: 'SOME/IP & Service Discovery', mod: 5, icon: '🛰' },
+];
+
+/* ─────────────────────────────────────── */
+/*  State                                  */
+/* ─────────────────────────────────────── */
+const state = {
+  moduleProgress: [0,0,0,0,0,0],
+  labsDone: [0,0,0,0,0,0],
+  quizScores: [null,null,null,null,null,null],
+  hoursSpent: 0,
+};
+
+/* ─────────────────────────────────────── */
+/*  Rendering                              */
+/* ─────────────────────────────────────── */
+function renderModuleCards() {
+  const el = document.getElementById('module-cards');
+  el.innerHTML = modules.map((m, i) => {
+    const pct = state.moduleProgress[i];
+    const diffColors = { green: 'bg-green-500/15 text-green-400', blue: 'bg-blue-500/15 text-blue-400', purple: 'bg-purple-500/15 text-purple-400' };
+    const statusIcon = pct === 100 ? '✅' : pct > 0 ? '🔄' : '○';
+    return `
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 card-hover fade-up fade-up-${i+1} cursor-pointer"
+           onclick="openModule(${i})">
+        <div class="flex items-start gap-3">
+          <div class="text-2xl flex-shrink-0">${m.icon}</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-bold">${m.title}</span>
+              <span class="badge-pill ${diffColors[m.diffColor]}">${m.difficulty}</span>
+              <span class="badge-pill bg-[var(--sidebar)] text-[var(--muted-foreground)]">${m.week}</span>
+            </div>
+            <p class="text-xs text-[var(--muted-foreground)] mt-1 line-clamp-2">${m.description}</p>
+            <div class="flex items-center gap-3 mt-2">
+              <span class="text-xs text-[var(--muted-foreground)]">⏱ ${m.hours}h</span>
+              <span class="text-xs text-[var(--muted-foreground)]">🧪 ${state.labsDone[i]}/${m.totalLabs} labs</span>
+              <span class="text-xs text-[var(--muted-foreground)]">
+                ${state.quizScores[i] !== null ? '📝 Quiz: ' + state.quizScores[i] + '/5' : '📝 Quiz: —'}
+              </span>
+              <span class="ml-auto text-xs font-mono">${statusIcon} ${pct}%</span>
+            </div>
+            <div class="mt-2 h-1.5 bg-[var(--sidebar)] rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all" style="width:${pct}%;background:${pct===100?'#4ade80':'var(--primary)'}"></div>
+            </div>
+            <div class="flex flex-wrap gap-1 mt-2">
+              ${m.tags.slice(0,4).map(t => `<span class="badge-pill bg-[var(--sidebar)] text-[var(--muted-foreground)]">${t}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function updateStats() {
+  const completed = state.moduleProgress.filter(p => p === 100).length;
+  const labsDone = state.labsDone.reduce((s,v)=>s+v,0);
+  const scores = state.quizScores.filter(s=>s!==null);
+  const avgScore = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*20)+'%' : '—';
+  document.getElementById('stat-completed').textContent = completed + '/6';
+  document.getElementById('stat-labs').textContent = labsDone + '/18';
+  document.getElementById('stat-score').textContent = avgScore;
+  document.getElementById('stat-hrs').textContent = Math.round(completed*6.5 + labsDone*0.5) + 'h';
+  const totalPct = Math.round(state.moduleProgress.reduce((a,b)=>a+b,0)/6);
+  const offset = 163 - (163 * totalPct / 100);
+  document.getElementById('hero-ring').style.strokeDashoffset = offset;
+  document.getElementById('hero-pct').textContent = totalPct + '%';
+}
+
+/* ─────────────────────────────────────── */
+/*  Module Detail Modal                    */
+/* ─────────────────────────────────────── */
+function openModule(idx) {
+  const m = modules[idx];
+  const labs = m.labs.map((l,li) => `
+    <label class="flex items-start gap-2 cursor-pointer py-1">
+      <input type="checkbox" ${l.done?'checked':''} onchange="toggleLab(${idx},${li},this.checked)"
+        class="mt-0.5 rounded flex-shrink-0">
+      <span class="text-xs ${l.done?'line-through text-[var(--muted-foreground)]':''}">${l.name}</span>
+    </label>`).join('');
+
+  document.getElementById('modal-content').innerHTML = `
+    <div class="flex items-center gap-2 mb-3">
+      <span class="text-2xl">${m.icon}</span>
+      <div>
+        <h2 class="text-sm font-bold">${m.title}</h2>
+        <p class="text-xs text-[var(--muted-foreground)]">${m.week} · ${m.hours} hours</p>
+      </div>
+      <button onclick="closeModal()" class="ml-auto text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-lg">✕</button>
+    </div>
+
+    <p class="text-xs text-[var(--muted-foreground)] leading-relaxed mb-4">${m.description}</p>
+
+    <div class="mb-4">
+      <div class="text-xs font-bold mb-2">🎯 Learning Objectives</div>
+      <ul class="space-y-1">
+        ${m.objectives.map(o => `<li class="text-xs text-[var(--muted-foreground)] flex gap-1.5"><span class="text-[var(--primary)] mt-0.5">›</span>${o}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="mb-4">
+      <div class="text-xs font-bold mb-2">🧪 Lab Exercises</div>
+      <div class="bg-[var(--sidebar)] rounded-lg p-3 space-y-0.5">${labs}</div>
+    </div>
+
+    <div class="mb-4">
+      <div class="text-xs font-bold mb-2">🛠 Tools</div>
+      <div class="flex flex-wrap gap-1.5">
+        ${m.tools.map(t => `<span class="badge-pill bg-blue-500/10 text-blue-400">${t}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button onclick="markComplete(${idx})" class="flex-1 bg-[var(--primary)] text-[var(--primary-foreground)] text-xs py-2 rounded font-medium hover:opacity-90">
+        ${state.moduleProgress[idx]===100?'✅ Completed':'Mark Complete'}
+      </button>
+      <button onclick="closeModal();showTab('quiz');startQuiz(${idx})" class="flex-1 border border-[var(--border)] text-xs py-2 rounded hover:bg-[var(--sidebar)]">
+        📝 Take Quiz
+      </button>
+    </div>`;
+  document.getElementById('modal').classList.remove('hidden');
+  document.getElementById('modal').classList.add('flex');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal')) return;
+  document.getElementById('modal').classList.add('hidden');
+  document.getElementById('modal').classList.remove('flex');
+  renderModuleCards();
+  updateStats();
+  renderSkills();
+  renderLearningPath();
+}
+
+function toggleLab(modIdx, labIdx, done) {
+  modules[modIdx].labs[labIdx].done = done;
+  state.labsDone[modIdx] = modules[modIdx].labs.filter(l=>l.done).length;
+  const labPct = (state.labsDone[modIdx] / modules[modIdx].totalLabs) * 60;
+  const qPct = state.quizScores[modIdx] !== null ? (state.quizScores[modIdx]/5)*40 : 0;
+  state.moduleProgress[modIdx] = Math.round(labPct + qPct);
+  updateStats();
+}
+
+function markComplete(idx) {
+  state.moduleProgress[idx] = 100;
+  state.labsDone[idx] = 3;
+  modules[idx].labs.forEach(l => l.done = true);
+  updateStats();
+  closeModal();
+}
+
+/* ─────────────────────────────────────── */
+/*  Tab Switching                          */
+/* ─────────────────────────────────────── */
+function showTab(name) {
+  ['modules','quiz','skills','about'].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.add('hidden');
+    document.getElementById(`nav-${t}`).classList.remove('tab-active');
+    document.getElementById(`nav-${t}`).classList.add('text-[var(--muted-foreground)]');
+    document.getElementById(`nav-${t}`).style.borderBottomColor = 'transparent';
+  });
+  document.getElementById(`tab-${name}`).classList.remove('hidden');
+  document.getElementById(`nav-${name}`).classList.add('tab-active');
+  document.getElementById(`nav-${name}`).classList.remove('text-[var(--muted-foreground)]');
+  if (name === 'skills') { renderSkills(); renderLearningPath(); }
+  if (name === 'quiz') renderQuizSelector();
+}
+
+/* ─────────────────────────────────────── */
+/*  Quiz System                            */
+/* ─────────────────────────────────────── */
+let currentQuizMod = null;
+let currentQIdx = 0;
+let quizCorrect = 0;
+let quizAnswered = false;
+
+function renderQuizSelector() {
+  const el = document.getElementById('quiz-module-selector');
+  el.innerHTML = modules.map((m,i) => `
+    <button onclick="startQuiz(${i})" class="badge-pill border border-[var(--border)] hover:border-[var(--primary)] bg-[var(--sidebar)] text-[var(--foreground)] transition py-1 px-2 text-xs cursor-pointer ${currentQuizMod===i?'border-[var(--primary)] text-[var(--primary)]':''}">
+      ${m.icon} M${i+1}${state.quizScores[i]!==null?' ✓':''}
+    </button>`).join('');
+}
+
+function startQuiz(modIdx) {
+  currentQuizMod = modIdx;
+  currentQIdx = 0;
+  quizCorrect = 0;
+  quizAnswered = false;
+  renderQuizSelector();
+  document.getElementById('quiz-module-name').textContent = `Module ${modIdx+1}: ${modules[modIdx].title}`;
+  document.getElementById('quiz-empty').classList.add('hidden');
+  document.getElementById('quiz-question-area').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = quizData[currentQuizMod][currentQIdx];
+  const total = quizData[currentQuizMod].length;
+  document.getElementById('q-num').textContent = `Q${currentQIdx+1} of ${total}`;
+  document.getElementById('quiz-progress-label').textContent = `Question ${currentQIdx+1} of ${total}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-options').innerHTML = q.opts.map((o,i) => `
+    <div class="quiz-opt border border-[var(--border)] rounded-lg p-2.5 text-xs" onclick="selectAnswer(${i})">
+      <span class="font-bold text-[var(--muted-foreground)] mr-2">${['A','B','C','D'][i]}.</span>${o}
+    </div>`).join('');
+  document.getElementById('q-feedback').classList.add('hidden');
+  document.getElementById('btn-next').classList.add('hidden');
+  document.getElementById('btn-restart').classList.add('hidden');
+  quizAnswered = false;
+}
+
+function selectAnswer(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizData[currentQuizMod][currentQIdx];
+  const opts = document.getElementById('q-options').children;
+  const correct = idx === q.ans;
+  if (correct) { quizCorrect++; opts[idx].classList.add('correct'); }
+  else { opts[idx].classList.add('wrong'); opts[q.ans].classList.add('correct'); }
+  const fb = document.getElementById('q-feedback');
+  fb.classList.remove('hidden');
+  fb.className = `mt-3 text-xs rounded-lg p-2.5 border ${correct?'bg-green-500/10 border-green-500/30 text-green-400':'bg-red-500/10 border-red-500/30 text-red-400'}`;
+  fb.innerHTML = `${correct?'✅ Correct!':'❌ Incorrect.'} <span class="text-[var(--foreground)]">${q.exp}</span>`;
+  const last = currentQIdx === quizData[currentQuizMod].length - 1;
+  document.getElementById('btn-next').textContent = last ? '🏆 Finish Quiz' : 'Next →';
+  document.getElementById('btn-next').classList.remove('hidden');
+  document.getElementById('quiz-score-badge').textContent = `Score: ${quizCorrect}/${currentQIdx+1}`;
+}
+
+function nextQuestion() {
+  currentQIdx++;
+  if (currentQIdx >= quizData[currentQuizMod].length) {
+    state.quizScores[currentQuizMod] = quizCorrect;
+    const qPct = (quizCorrect / 5) * 40;
+    const labPct = (state.labsDone[currentQuizMod] / 3) * 60;
+    state.moduleProgress[currentQuizMod] = Math.round(labPct + qPct);
+    document.getElementById('q-options').innerHTML = '';
+    document.getElementById('q-num').textContent = '🏆 Quiz Complete!';
+    document.getElementById('quiz-progress-label').textContent = `Final score: ${quizCorrect}/5`;
+    document.getElementById('q-text').textContent = `You scored ${quizCorrect} out of 5 (${Math.round(quizCorrect/5*100)}%).`;
+    document.getElementById('q-feedback').className = 'mt-3 text-xs rounded-lg p-2.5 border bg-blue-500/10 border-blue-500/30 text-blue-400';
+    document.getElementById('q-feedback').textContent = quizCorrect>=4 ? '🌟 Excellent! Ready for the next module.' : quizCorrect>=3 ? '👍 Good work! Review the missed questions.' : '📖 Review the module material and try again.';
+    document.getElementById('q-feedback').classList.remove('hidden');
+    document.getElementById('btn-next').classList.add('hidden');
+    document.getElementById('btn-restart').classList.remove('hidden');
+    document.getElementById('quiz-score-badge').textContent = `Final: ${quizCorrect}/5`;
+    updateStats();
+    renderQuizSelector();
+    return;
+  }
+  renderQuestion();
+}
+
+function restartQuiz() { startQuiz(currentQuizMod); }
+
+/* ─────────────────────────────────────── */
+/*  Skills Tracker                         */
+/* ─────────────────────────────────────── */
+function renderSkills() {
+  const el = document.getElementById('skills-list');
+  el.innerHTML = skills.map(s => {
+    const pct = state.moduleProgress[s.mod];
+    const color = pct === 100 ? '#4ade80' : pct >= 50 ? '#60a5fa' : pct > 0 ? '#facc15' : 'var(--border)';
+    return `
+      <div class="flex items-center gap-3">
+        <span class="text-base w-5 text-center">${s.icon}</span>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs mb-1">
+            <span>${s.name}</span>
+            <span class="font-mono text-[var(--muted-foreground)]">${pct}%</span>
+          </div>
+          <div class="h-1.5 bg-[var(--sidebar)] rounded-full overflow-hidden">
+            <div class="skill-bar h-full rounded-full" style="width:${pct}%;background:${color}"></div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderLearningPath() {
+  const path = [
+    { label: 'Foundation: ARXML & SWC',     mods: [0], desc: 'Core AUTOSAR model understanding' },
+    { label: 'Runtime: OS & Scheduling',     mods: [1], desc: 'Task execution environment' },
+    { label: 'Persistence: NvM',             mods: [2], desc: 'Non-volatile data lifecycle' },
+    { label: 'Diagnostics & Comms',          mods: [3,4], desc: 'UDS + LIN protocol mastery' },
+    { label: 'Advanced: Adaptive Platform',  mods: [5], desc: 'SOME/IP service-oriented arch' },
+  ];
+  const el = document.getElementById('learning-path');
+  el.innerHTML = path.map((p,i) => {
+    const pct = Math.round(p.mods.reduce((s,m)=>s+state.moduleProgress[m],0)/p.mods.length);
+    const done = pct === 100;
+    return `
+      <div class="flex items-center gap-3">
+        <div class="flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs font-bold
+          ${done ? 'bg-green-500/20 border-green-500 text-green-400' : pct>0 ? 'bg-[var(--primary)]/20 border-[var(--primary)] text-[var(--primary)]' : 'border-[var(--border)] text-[var(--muted-foreground)]'}">
+          ${done ? '✓' : i+1}
+        </div>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs">
+            <span class="font-medium">${p.label}</span>
+            <span class="text-[var(--muted-foreground)]">${pct}%</span>
+          </div>
+          <p class="text-xs text-[var(--muted-foreground)]">${p.desc}</p>
+        </div>
+      </div>
+      ${i < path.length-1 ? '<div class="w-7 flex justify-center"><div class="w-0.5 h-4 bg-[var(--border)]"></div></div>' : ''}`;
+  }).join('');
+}
+
+/* ─────────────────────────────────────── */
+/*  INIT                                   */
+/* ─────────────────────────────────────── */
+renderModuleCards();
+renderQuizSelector();
+renderSkills();
+renderLearningPath();
+updateStats();
+</script>
+</body>
+</html>
