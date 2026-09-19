@@ -1,11 +1,33 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AUTOSAR Engineering Mastery — Course Portal</title>
+<title>AUTOSAR Engineering Mastery â€” Course Portal</title>
 <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
 <style>
+  :root {
+    --background: #f1f5f9;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --sidebar: #f8fafc;
+    --border: #cbd5e1;
+    --muted-foreground: #64748b;
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0f172a;
+      --foreground: #f8fafc;
+      --card: #1e293b;
+      --sidebar: #0f172a;
+      --border: #334155;
+      --muted-foreground: #94a3b8;
+      --primary: #3b82f6;
+      --primary-foreground: #ffffff;
+    }
+  }
   @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
   @keyframes shimmer { 0%{background-position:200% center} 100%{background-position:-200% center} }
   @keyframes pulse2 { 0%,100%{opacity:1} 50%{opacity:0.5} }
@@ -53,23 +75,23 @@
 </head>
 <body class="bg-[var(--background)] text-[var(--foreground)] antialiased">
 
-<!-- ══════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <!--  HERO HEADER                                       -->
-<!-- ══════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="bg-[var(--sidebar)] border-b border-[var(--border)]">
   <div class="px-5 py-4">
     <div class="flex items-start justify-between">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span class="text-2xl">🚗</span>
+          <span class="text-2xl">ðŸš—</span>
           <h1 class="text-base font-bold gradient-text">AUTOSAR Engineering Mastery</h1>
         </div>
-        <p class="text-xs text-[var(--muted-foreground)]">Classic + Adaptive Platform · 6 Modules · 40 Hours · Industrial-Grade Training</p>
+        <p class="text-xs text-[var(--muted-foreground)]">Classic + Adaptive Platform Â· 6 Modules Â· 40 Hours Â· Industrial-Grade Training</p>
         <div class="flex items-center gap-3 mt-2">
-          <span class="badge-pill bg-blue-500/15 text-blue-400">📚 6 Modules</span>
-          <span class="badge-pill bg-green-500/15 text-green-400">🧪 18 Labs</span>
-          <span class="badge-pill bg-purple-500/15 text-purple-400">🎯 60 Quiz Questions</span>
-          <span class="badge-pill bg-yellow-500/15 text-yellow-400">🏆 Certificate</span>
+          <span class="badge-pill bg-blue-500/15 text-blue-400">ðŸ“š 6 Modules</span>
+          <span class="badge-pill bg-green-500/15 text-green-400">ðŸ§ª 18 Labs</span>
+          <span class="badge-pill bg-purple-500/15 text-purple-400">ðŸŽ¯ 60 Quiz Questions</span>
+          <span class="badge-pill bg-yellow-500/15 text-yellow-400">ðŸ† Certificate</span>
         </div>
       </div>
       <div class="text-center">
@@ -88,19 +110,19 @@
 
   <!-- Nav Tabs -->
   <div class="px-5 flex gap-4 overflow-x-auto">
-    <button onclick="showTab('modules')" id="nav-modules" class="tab-active text-xs font-medium py-2 border-b-2 border-[var(--primary)] whitespace-nowrap text-[var(--primary)]">🗂 Modules</button>
-    <button onclick="showTab('quiz')" id="nav-quiz" class="text-xs font-medium py-2 border-b-2 border-transparent text-[var(--muted-foreground)] whitespace-nowrap">📝 Quiz Bank</button>
-    <button onclick="showTab('skills')" id="nav-skills" class="text-xs font-medium py-2 border-b-2 border-transparent text-[var(--muted-foreground)] whitespace-nowrap">📊 Skill Tracker</button>
-    <button onclick="showTab('about')" id="nav-about" class="text-xs font-medium py-2 border-b-2 border-transparent text-[var(--muted-foreground)] whitespace-nowrap">ℹ️ About</button>
+    <button onclick="showTab('modules')" id="nav-modules" class="tab-active text-xs font-medium py-2 border-b-2 border-[var(--primary)] whitespace-nowrap text-[var(--primary)]">ðŸ—‚ Modules</button>
+    <button onclick="showTab('quiz')" id="nav-quiz" class="text-xs font-medium py-2 border-b-2 border-transparent text-[var(--muted-foreground)] whitespace-nowrap">ðŸ“ Quiz Bank</button>
+    <button onclick="showTab('skills')" id="nav-skills" class="text-xs font-medium py-2 border-b-2 border-transparent text-[var(--muted-foreground)] whitespace-nowrap">ðŸ“Š Skill Tracker</button>
+    <button onclick="showTab('about')" id="nav-about" class="text-xs font-medium py-2 border-b-2 border-transparent text-[var(--muted-foreground)] whitespace-nowrap">â„¹ï¸ About</button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <!--  CONTENT AREA                                      -->
-<!-- ══════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="content" class="p-4 overflow-y-auto" style="max-height: calc(100vh - 130px)">
 
-  <!-- ── MODULES TAB ── -->
+  <!-- â”€â”€ MODULES TAB â”€â”€ -->
   <div id="tab-modules">
     <!-- Stats Row -->
     <div class="grid grid-cols-4 gap-2 mb-4">
@@ -113,7 +135,7 @@
         <div class="text-xs text-[var(--muted-foreground)]">Labs Done</div>
       </div>
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center fade-up fade-up-3">
-        <div id="stat-score" class="text-lg font-bold text-purple-400">—</div>
+        <div id="stat-score" class="text-lg font-bold text-purple-400">â€”</div>
         <div class="text-xs text-[var(--muted-foreground)]">Quiz Score</div>
       </div>
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center fade-up fade-up-4">
@@ -128,7 +150,7 @@
     </div>
   </div>
 
-  <!-- ── QUIZ TAB ── -->
+  <!-- â”€â”€ QUIZ TAB â”€â”€ -->
   <div id="tab-quiz" class="hidden">
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 mb-3">
       <div class="flex items-center justify-between mb-3">
@@ -150,13 +172,13 @@
       <div id="quiz-question-area" class="hidden">
         <div class="bg-[var(--sidebar)] rounded-lg p-3 mb-3">
           <div class="text-xs font-bold mb-1 text-[var(--muted-foreground)]" id="q-num">Q1</div>
-          <p class="text-sm font-medium" id="q-text">Loading…</p>
+          <p class="text-sm font-medium" id="q-text">Loadingâ€¦</p>
         </div>
         <div id="q-options" class="space-y-2"><!-- options here --></div>
         <div id="q-feedback" class="hidden mt-3 text-xs rounded-lg p-2.5 border"></div>
         <div class="flex gap-2 mt-3">
-          <button onclick="nextQuestion()" id="btn-next" class="hidden bg-[var(--primary)] text-[var(--primary-foreground)] text-xs px-4 py-1.5 rounded font-medium">Next →</button>
-          <button onclick="restartQuiz()" id="btn-restart" class="hidden border border-[var(--border)] text-xs px-4 py-1.5 rounded">↺ Restart</button>
+          <button onclick="nextQuestion()" id="btn-next" class="hidden bg-[var(--primary)] text-[var(--primary-foreground)] text-xs px-4 py-1.5 rounded font-medium">Next â†’</button>
+          <button onclick="restartQuiz()" id="btn-restart" class="hidden border border-[var(--border)] text-xs px-4 py-1.5 rounded">â†º Restart</button>
         </div>
       </div>
       <div id="quiz-empty" class="text-center text-[var(--muted-foreground)] text-xs py-6">
@@ -165,34 +187,34 @@
     </div>
   </div>
 
-  <!-- ── SKILLS TAB ── -->
+  <!-- â”€â”€ SKILLS TAB â”€â”€ -->
   <div id="tab-skills" class="hidden">
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 mb-3">
-      <h3 class="text-sm font-bold mb-3">🎯 AUTOSAR Skill Tracker</h3>
+      <h3 class="text-sm font-bold mb-3">ðŸŽ¯ AUTOSAR Skill Tracker</h3>
       <div id="skills-list" class="space-y-3">
         <!-- rendered by JS -->
       </div>
     </div>
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4">
-      <h3 class="text-sm font-bold mb-3">📋 Learning Path Completion</h3>
+      <h3 class="text-sm font-bold mb-3">ðŸ“‹ Learning Path Completion</h3>
       <div class="space-y-2" id="learning-path"><!-- rendered by JS --></div>
     </div>
   </div>
 
-  <!-- ── ABOUT TAB ── -->
+  <!-- â”€â”€ ABOUT TAB â”€â”€ -->
   <div id="tab-about" class="hidden">
     <div class="space-y-3">
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 fade-up">
-        <h3 class="text-sm font-bold mb-2">🎓 Course Overview</h3>
+        <h3 class="text-sm font-bold mb-2">ðŸŽ“ Course Overview</h3>
         <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
           This AUTOSAR Engineering Mastery course takes engineers from zero AUTOSAR knowledge to
           full-stack implementation capability. Every concept is reinforced with a working simulation
-          exercise — no theory-only modules. The course mirrors real industrial workflows used with
+          exercise â€” no theory-only modules. The course mirrors real industrial workflows used with
           Vector DaVinci, EB Tresos, and COVESA vsomeip.
         </p>
       </div>
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 fade-up">
-        <h3 class="text-sm font-bold mb-3">🛠 Tools Covered</h3>
+        <h3 class="text-sm font-bold mb-3">ðŸ›  Tools Covered</h3>
         <div class="grid grid-cols-2 gap-2">
           <div class="bg-[var(--sidebar)] rounded p-2 text-xs">
             <div class="font-semibold">Classic Platform</div>
@@ -213,7 +235,7 @@
         </div>
       </div>
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-4 fade-up">
-        <h3 class="text-sm font-bold mb-2">📐 AUTOSAR Standards</h3>
+        <h3 class="text-sm font-bold mb-2">ðŸ“ AUTOSAR Standards</h3>
         <div class="space-y-1.5 text-xs">
           <div class="flex items-center gap-2"><span class="badge-pill bg-blue-500/15 text-blue-400">R4.4</span><span class="text-[var(--muted-foreground)]">AUTOSAR Classic Platform (primary)</span></div>
           <div class="flex items-center gap-2"><span class="badge-pill bg-purple-500/15 text-purple-400">R23-11</span><span class="text-[var(--muted-foreground)]">AUTOSAR Adaptive Platform</span></div>
@@ -227,26 +249,26 @@
 
 </div><!-- end content -->
 
-<!-- ══════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <!--  MODULE DETAIL MODAL                               -->
-<!-- ══════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="modal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4" onclick="closeModal(event)">
   <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl max-w-lg w-full max-h-[80vh] overflow-y-auto shadow-2xl" onclick="event.stopPropagation()">
     <div id="modal-content" class="p-5"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <!--  JAVASCRIPT                                        -->
-<!-- ══════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <script>
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  DATA                                   */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const modules = [
   {
     id: 0,
-    icon: '🗂',
+    icon: 'ðŸ—‚',
     title: 'ARXML & SWC Port Configuration',
     week: 'Week 1',
     hours: 6,
@@ -274,7 +296,7 @@ const modules = [
   },
   {
     id: 1,
-    icon: '⏱',
+    icon: 'â±',
     title: 'OS Configuration: Tasks, Alarms & ISRs',
     week: 'Week 2',
     hours: 6,
@@ -295,14 +317,14 @@ const modules = [
     ],
     labs: [
       { name: 'Lab 2A: Configure 3 tasks + 2 alarms in OIL', done: false },
-      { name: 'Lab 2B: Observe Gantt chart — normal operation', done: false },
+      { name: 'Lab 2B: Observe Gantt chart â€” normal operation', done: false },
       { name: 'Lab 2C: Inject overload and analyse deadline miss', done: false },
     ],
     tools: ['Trampoline RTOS', 'ETAS RTA-OS', 'Course OS Scheduler Simulator'],
   },
   {
     id: 2,
-    icon: '💾',
+    icon: 'ðŸ’¾',
     title: 'NvM: EEPROM Block Lifecycle',
     week: 'Week 3',
     hours: 7,
@@ -323,14 +345,14 @@ const modules = [
     ],
     labs: [
       { name: 'Lab 3A: Configure 3 NvM blocks (Native + Redundant)', done: false },
-      { name: 'Lab 3B: Run startup ReadAll — verify all blocks load', done: false },
-      { name: 'Lab 3C: Simulate power cut — observe redundant recovery', done: false },
+      { name: 'Lab 3B: Run startup ReadAll â€” verify all blocks load', done: false },
+      { name: 'Lab 3C: Simulate power cut â€” observe redundant recovery', done: false },
     ],
     tools: ['EB Tresos NvM Plugin', 'Course NvM Lifecycle Simulator'],
   },
   {
     id: 3,
-    icon: '🔧',
+    icon: 'ðŸ”§',
     title: 'UDS Diagnostics: Session & Routine Control',
     week: 'Week 4',
     hours: 8,
@@ -343,7 +365,7 @@ const modules = [
     tags: ['UDS', 'ISO14229', 'DCM', 'DEM', 'DTC', '0x10', '0x27', '0x31'],
     description: 'Implement the full UDS diagnostic stack: session management (0x10), security access (0x27), read/write data by identifier (0x22/0x2E), routine control (0x31), and DTC management (0x19/0x14).',
     objectives: [
-      'Navigate the UDS session hierarchy (Default → Extended → Programming)',
+      'Navigate the UDS session hierarchy (Default â†’ Extended â†’ Programming)',
       'Implement seed/key security access algorithm (0x27)',
       'Read and write DIDs with proper scaling (0x22, 0x2E)',
       'Execute and query routines with PENDING state handling (0x31)',
@@ -352,13 +374,13 @@ const modules = [
     labs: [
       { name: 'Lab 4A: Full session escalation flow', done: false },
       { name: 'Lab 4B: Security access with correct/wrong key', done: false },
-      { name: 'Lab 4C: Routine 0x31 — Self-test with async result', done: false },
+      { name: 'Lab 4C: Routine 0x31 â€” Self-test with async result', done: false },
     ],
     tools: ['Vector CANoe + CAPL', 'python-udsoncan', 'Course UDS Console'],
   },
   {
     id: 4,
-    icon: '📡',
+    icon: 'ðŸ“¡',
     title: 'LIN Stack: Master/Slave Communication',
     week: 'Week 5',
     hours: 6,
@@ -380,13 +402,13 @@ const modules = [
     labs: [
       { name: 'Lab 5A: Configure 3-frame schedule table', done: false },
       { name: 'Lab 5B: Observe frame cycling and signal values', done: false },
-      { name: 'Lab 5C: Inject checksum error — observe error handling', done: false },
+      { name: 'Lab 5C: Inject checksum error â€” observe error handling', done: false },
     ],
     tools: ['Vector CANoe LIN', 'LINalyzer', 'Course LIN Frame Analyzer'],
   },
   {
     id: 5,
-    icon: '🌐',
+    icon: 'ðŸŒ',
     title: 'AUTOSAR Adaptive: ara::com & SOME/IP',
     week: 'Week 6',
     hours: 7,
@@ -407,16 +429,16 @@ const modules = [
     ],
     labs: [
       { name: 'Lab 6A: Write SpeedService manifest + skeleton', done: false },
-      { name: 'Lab 6B: Client proxy — FindService + method call', done: false },
+      { name: 'Lab 6B: Client proxy â€” FindService + method call', done: false },
       { name: 'Lab 6C: Event subscription + simulated network failure', done: false },
     ],
     tools: ['vsomeip (COVESA)', 'ETAS VRTE', 'Course SOME/IP Simulator'],
   },
 ];
 
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  Quiz Data                              */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const quizData = {
   0: [
     { q: 'In AUTOSAR, a P-PORT is used to:', opts: ['Receive data from another SWC', 'Provide/send data to other SWCs', 'Configure hardware peripherals', 'Define OS task priorities'], ans: 1, exp: 'A P-PORT (Provider Port) is used by a SWC to provide/send data or services to other SWCs. R-PORT (Receiver Port) is used to receive.' },
@@ -435,7 +457,7 @@ const quizData = {
   2: [
     { q: 'A REDUNDANT NvM block stores how many copies?', opts: ['1', '2', '3', 'Configurable'], ans: 1, exp: 'A REDUNDANT block stores 2 copies in different memory locations. If one is corrupted (e.g., power loss), the other is used for recovery.' },
     { q: 'NvM_ReadAll() is typically called during:', opts: ['Task initialization', 'ECU startup sequence (EcuM)', 'Every 100ms background task', 'On DTC occurrence'], ans: 1, exp: 'NvM_ReadAll() is called during the ECU startup sequence managed by EcuM (AL_DriverInitTwo) to restore all NvM blocks from flash to RAM.' },
-    { q: 'NVM_REQ_NV_INVALIDATED status means:', opts: ['Write failed', 'Block was never written or explicitly invalidated — use defaults', 'Hardware fault detected', 'Block is currently being read'], ans: 1, exp: 'NVM_REQ_NV_INVALIDATED means the block has no valid data (first boot or explicitly invalidated). The application should use default values.' },
+    { q: 'NVM_REQ_NV_INVALIDATED status means:', opts: ['Write failed', 'Block was never written or explicitly invalidated â€” use defaults', 'Hardware fault detected', 'Block is currently being read'], ans: 1, exp: 'NVM_REQ_NV_INVALIDATED means the block has no valid data (first boot or explicitly invalidated). The application should use default values.' },
     { q: 'Fee is the AUTOSAR module for:', opts: ['EEPROM emulation in Flash', 'Direct EEPROM access', 'Flash programming', 'NvM job scheduling'], ans: 0, exp: 'Fee (Flash EEPROM Emulation) emulates EEPROM behavior in Flash memory. Ea (EEPROM Abstraction) provides direct EEPROM access.' },
     { q: 'NvM_MainFunction() must be called:', opts: ['Only during startup', 'Periodically in a background task to process the NvM job queue', 'Only during shutdown', 'Once per NvM_WriteBlock() call'], ans: 1, exp: 'NvM_MainFunction() drives the NvM state machine and must be called periodically (typically in a 5ms or background task) to process queued read/write jobs.' },
   ],
@@ -448,7 +470,7 @@ const quizData = {
   ],
   4: [
     { q: 'LIN uses how many wires for communication?', opts: ['2 (differential pair like CAN)', '1 (single wire + ground)', '4 (full duplex UART)', '3 (RS-485 style)'], ans: 1, exp: 'LIN uses a single wire bus plus ground. This makes it very cost-effective for low-speed, low-priority networks like window motors and HVAC.' },
-    { q: 'In LIN, who controls the schedule table?', opts: ['Any node on the bus', 'The Master node only', 'The Slave with highest priority', 'Both Master and Slave equally'], ans: 1, exp: 'In LIN, the Master node exclusively controls the schedule table — it decides when each frame is transmitted by sending the header (BREAK+SYNC+PID).' },
+    { q: 'In LIN, who controls the schedule table?', opts: ['Any node on the bus', 'The Master node only', 'The Slave with highest priority', 'Both Master and Slave equally'], ans: 1, exp: 'In LIN, the Master node exclusively controls the schedule table â€” it decides when each frame is transmitted by sending the header (BREAK+SYNC+PID).' },
     { q: 'LIN PID consists of:', opts: ['8-bit frame ID only', '6-bit frame ID + 2 parity bits', '8-bit frame ID + 8-bit length', '4-bit ID + 4-bit flags'], ans: 1, exp: 'PID (Protected ID) = 6-bit frame ID (bits 0-5) + 2 parity bits (P0, P1). Parity protects against PID corruption on the bus.' },
     { q: 'A LIN enhanced checksum includes:', opts: ['Only data bytes', 'Data bytes + PID byte', 'Only the PID byte', 'Frame header bytes only'], ans: 1, exp: 'Enhanced checksum (LIN 2.x) covers both PID and data bytes. Classic checksum (LIN 1.x) covers only data bytes.' },
     { q: 'Maximum LIN bus speed is:', opts: ['100 kbit/s', '20 kbit/s', '1 Mbit/s', '500 kbit/s'], ans: 1, exp: 'LIN maximum speed is 20 kbit/s (LIN 2.x). This is intentionally low to enable single-wire, low-cost implementation without complex transceivers.' },
@@ -458,31 +480,31 @@ const quizData = {
     { q: 'SOME/IP Service Discovery (SD) uses which message to announce a service?', opts: ['SD Find', 'SD Offer', 'SD Subscribe', 'SD Notify'], ans: 1, exp: 'SD OfferService is sent by the server (provider) to announce that a service is available. Clients respond with FindService to locate it.' },
     { q: 'In ara::com, a skeleton represents:', opts: ['The client/consumer side', 'The server/provider implementation', 'The service manifest', 'The transport protocol'], ans: 1, exp: 'The Skeleton is the server-side implementation of a service. The Proxy is the client-side handle. Both are generated from the service manifest.' },
     { q: 'Adaptive Platform processes run on:', opts: ['AUTOSAR OS (OSEK)', 'POSIX-compliant OS like Linux or QNX', 'Bare metal without OS', 'FreeRTOS only'], ans: 1, exp: 'Adaptive Platform runs on POSIX-compliant operating systems. This allows use of standard Linux/QNX, enabling OTA updates and dynamic deployment.' },
-    { q: 'SOME/IP fields support:', opts: ['Read-only access only', 'Getter, Setter, and Notifier operations', 'Only event-based notification', 'Write-only operations'], ans: 1, exp: 'SOME/IP Fields support Getter (read current value), Setter (write new value), and Notifier (subscribe to changes) — combining data and events in one construct.' },
+    { q: 'SOME/IP fields support:', opts: ['Read-only access only', 'Getter, Setter, and Notifier operations', 'Only event-based notification', 'Write-only operations'], ans: 1, exp: 'SOME/IP Fields support Getter (read current value), Setter (write new value), and Notifier (subscribe to changes) â€” combining data and events in one construct.' },
   ],
 };
 
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  Skills Data                            */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const skills = [
-  { name: 'ARXML Configuration',         mod: 0, icon: '📄' },
-  { name: 'RTE Interface Design',         mod: 0, icon: '🔌' },
-  { name: 'OSEK/AUTOSAR OS',             mod: 1, icon: '⏱' },
-  { name: 'Task Scheduling & Timing',    mod: 1, icon: '📊' },
-  { name: 'NvM Memory Management',       mod: 2, icon: '💾' },
-  { name: 'Flash/EEPROM Abstraction',    mod: 2, icon: '🗄' },
-  { name: 'UDS Diagnostics (ISO 14229)', mod: 3, icon: '🔧' },
-  { name: 'DTC & DEM Management',        mod: 3, icon: '⚠' },
-  { name: 'LIN Protocol (ISO 17987)',    mod: 4, icon: '📡' },
-  { name: 'ComStack Integration',        mod: 4, icon: '🔗' },
-  { name: 'ara::com Middleware',         mod: 5, icon: '🌐' },
-  { name: 'SOME/IP & Service Discovery', mod: 5, icon: '🛰' },
+  { name: 'ARXML Configuration',         mod: 0, icon: 'ðŸ“„' },
+  { name: 'RTE Interface Design',         mod: 0, icon: 'ðŸ”Œ' },
+  { name: 'OSEK/AUTOSAR OS',             mod: 1, icon: 'â±' },
+  { name: 'Task Scheduling & Timing',    mod: 1, icon: 'ðŸ“Š' },
+  { name: 'NvM Memory Management',       mod: 2, icon: 'ðŸ’¾' },
+  { name: 'Flash/EEPROM Abstraction',    mod: 2, icon: 'ðŸ—„' },
+  { name: 'UDS Diagnostics (ISO 14229)', mod: 3, icon: 'ðŸ”§' },
+  { name: 'DTC & DEM Management',        mod: 3, icon: 'âš ' },
+  { name: 'LIN Protocol (ISO 17987)',    mod: 4, icon: 'ðŸ“¡' },
+  { name: 'ComStack Integration',        mod: 4, icon: 'ðŸ”—' },
+  { name: 'ara::com Middleware',         mod: 5, icon: 'ðŸŒ' },
+  { name: 'SOME/IP & Service Discovery', mod: 5, icon: 'ðŸ›°' },
 ];
 
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  State                                  */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const state = {
   moduleProgress: [0,0,0,0,0,0],
   labsDone: [0,0,0,0,0,0],
@@ -490,15 +512,15 @@ const state = {
   hoursSpent: 0,
 };
 
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  Rendering                              */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function renderModuleCards() {
   const el = document.getElementById('module-cards');
   el.innerHTML = modules.map((m, i) => {
     const pct = state.moduleProgress[i];
     const diffColors = { green: 'bg-green-500/15 text-green-400', blue: 'bg-blue-500/15 text-blue-400', purple: 'bg-purple-500/15 text-purple-400' };
-    const statusIcon = pct === 100 ? '✅' : pct > 0 ? '🔄' : '○';
+    const statusIcon = pct === 100 ? 'âœ…' : pct > 0 ? 'ðŸ”„' : 'â—‹';
     return `
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 card-hover fade-up fade-up-${i+1} cursor-pointer"
            onclick="openModule(${i})">
@@ -512,10 +534,10 @@ function renderModuleCards() {
             </div>
             <p class="text-xs text-[var(--muted-foreground)] mt-1 line-clamp-2">${m.description}</p>
             <div class="flex items-center gap-3 mt-2">
-              <span class="text-xs text-[var(--muted-foreground)]">⏱ ${m.hours}h</span>
-              <span class="text-xs text-[var(--muted-foreground)]">🧪 ${state.labsDone[i]}/${m.totalLabs} labs</span>
+              <span class="text-xs text-[var(--muted-foreground)]">â± ${m.hours}h</span>
+              <span class="text-xs text-[var(--muted-foreground)]">ðŸ§ª ${state.labsDone[i]}/${m.totalLabs} labs</span>
               <span class="text-xs text-[var(--muted-foreground)]">
-                ${state.quizScores[i] !== null ? '📝 Quiz: ' + state.quizScores[i] + '/5' : '📝 Quiz: —'}
+                ${state.quizScores[i] !== null ? 'ðŸ“ Quiz: ' + state.quizScores[i] + '/5' : 'ðŸ“ Quiz: â€”'}
               </span>
               <span class="ml-auto text-xs font-mono">${statusIcon} ${pct}%</span>
             </div>
@@ -535,7 +557,7 @@ function updateStats() {
   const completed = state.moduleProgress.filter(p => p === 100).length;
   const labsDone = state.labsDone.reduce((s,v)=>s+v,0);
   const scores = state.quizScores.filter(s=>s!==null);
-  const avgScore = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*20)+'%' : '—';
+  const avgScore = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*20)+'%' : 'â€”';
   document.getElementById('stat-completed').textContent = completed + '/6';
   document.getElementById('stat-labs').textContent = labsDone + '/18';
   document.getElementById('stat-score').textContent = avgScore;
@@ -546,9 +568,9 @@ function updateStats() {
   document.getElementById('hero-pct').textContent = totalPct + '%';
 }
 
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  Module Detail Modal                    */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function openModule(idx) {
   const m = modules[idx];
   const labs = m.labs.map((l,li) => `
@@ -563,27 +585,27 @@ function openModule(idx) {
       <span class="text-2xl">${m.icon}</span>
       <div>
         <h2 class="text-sm font-bold">${m.title}</h2>
-        <p class="text-xs text-[var(--muted-foreground)]">${m.week} · ${m.hours} hours</p>
+        <p class="text-xs text-[var(--muted-foreground)]">${m.week} Â· ${m.hours} hours</p>
       </div>
-      <button onclick="closeModal()" class="ml-auto text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-lg">✕</button>
+      <button onclick="closeModal()" class="ml-auto text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-lg">âœ•</button>
     </div>
 
     <p class="text-xs text-[var(--muted-foreground)] leading-relaxed mb-4">${m.description}</p>
 
     <div class="mb-4">
-      <div class="text-xs font-bold mb-2">🎯 Learning Objectives</div>
+      <div class="text-xs font-bold mb-2">ðŸŽ¯ Learning Objectives</div>
       <ul class="space-y-1">
-        ${m.objectives.map(o => `<li class="text-xs text-[var(--muted-foreground)] flex gap-1.5"><span class="text-[var(--primary)] mt-0.5">›</span>${o}</li>`).join('')}
+        ${m.objectives.map(o => `<li class="text-xs text-[var(--muted-foreground)] flex gap-1.5"><span class="text-[var(--primary)] mt-0.5">â€º</span>${o}</li>`).join('')}
       </ul>
     </div>
 
     <div class="mb-4">
-      <div class="text-xs font-bold mb-2">🧪 Lab Exercises</div>
+      <div class="text-xs font-bold mb-2">ðŸ§ª Lab Exercises</div>
       <div class="bg-[var(--sidebar)] rounded-lg p-3 space-y-0.5">${labs}</div>
     </div>
 
     <div class="mb-4">
-      <div class="text-xs font-bold mb-2">🛠 Tools</div>
+      <div class="text-xs font-bold mb-2">ðŸ›  Tools</div>
       <div class="flex flex-wrap gap-1.5">
         ${m.tools.map(t => `<span class="badge-pill bg-blue-500/10 text-blue-400">${t}</span>`).join('')}
       </div>
@@ -591,10 +613,10 @@ function openModule(idx) {
 
     <div class="flex gap-2">
       <button onclick="markComplete(${idx})" class="flex-1 bg-[var(--primary)] text-[var(--primary-foreground)] text-xs py-2 rounded font-medium hover:opacity-90">
-        ${state.moduleProgress[idx]===100?'✅ Completed':'Mark Complete'}
+        ${state.moduleProgress[idx]===100?'âœ… Completed':'Mark Complete'}
       </button>
       <button onclick="closeModal();showTab('quiz');startQuiz(${idx})" class="flex-1 border border-[var(--border)] text-xs py-2 rounded hover:bg-[var(--sidebar)]">
-        📝 Take Quiz
+        ðŸ“ Take Quiz
       </button>
     </div>`;
   document.getElementById('modal').classList.remove('hidden');
@@ -628,9 +650,9 @@ function markComplete(idx) {
   closeModal();
 }
 
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  Tab Switching                          */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function showTab(name) {
   ['modules','quiz','skills','about'].forEach(t => {
     document.getElementById(`tab-${t}`).classList.add('hidden');
@@ -645,9 +667,9 @@ function showTab(name) {
   if (name === 'quiz') renderQuizSelector();
 }
 
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  Quiz System                            */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let currentQuizMod = null;
 let currentQIdx = 0;
 let quizCorrect = 0;
@@ -657,7 +679,7 @@ function renderQuizSelector() {
   const el = document.getElementById('quiz-module-selector');
   el.innerHTML = modules.map((m,i) => `
     <button onclick="startQuiz(${i})" class="badge-pill border border-[var(--border)] hover:border-[var(--primary)] bg-[var(--sidebar)] text-[var(--foreground)] transition py-1 px-2 text-xs cursor-pointer ${currentQuizMod===i?'border-[var(--primary)] text-[var(--primary)]':''}">
-      ${m.icon} M${i+1}${state.quizScores[i]!==null?' ✓':''}
+      ${m.icon} M${i+1}${state.quizScores[i]!==null?' âœ“':''}
     </button>`).join('');
 }
 
@@ -700,9 +722,9 @@ function selectAnswer(idx) {
   const fb = document.getElementById('q-feedback');
   fb.classList.remove('hidden');
   fb.className = `mt-3 text-xs rounded-lg p-2.5 border ${correct?'bg-green-500/10 border-green-500/30 text-green-400':'bg-red-500/10 border-red-500/30 text-red-400'}`;
-  fb.innerHTML = `${correct?'✅ Correct!':'❌ Incorrect.'} <span class="text-[var(--foreground)]">${q.exp}</span>`;
+  fb.innerHTML = `${correct?'âœ… Correct!':'âŒ Incorrect.'} <span class="text-[var(--foreground)]">${q.exp}</span>`;
   const last = currentQIdx === quizData[currentQuizMod].length - 1;
-  document.getElementById('btn-next').textContent = last ? '🏆 Finish Quiz' : 'Next →';
+  document.getElementById('btn-next').textContent = last ? 'ðŸ† Finish Quiz' : 'Next â†’';
   document.getElementById('btn-next').classList.remove('hidden');
   document.getElementById('quiz-score-badge').textContent = `Score: ${quizCorrect}/${currentQIdx+1}`;
 }
@@ -715,11 +737,11 @@ function nextQuestion() {
     const labPct = (state.labsDone[currentQuizMod] / 3) * 60;
     state.moduleProgress[currentQuizMod] = Math.round(labPct + qPct);
     document.getElementById('q-options').innerHTML = '';
-    document.getElementById('q-num').textContent = '🏆 Quiz Complete!';
+    document.getElementById('q-num').textContent = 'ðŸ† Quiz Complete!';
     document.getElementById('quiz-progress-label').textContent = `Final score: ${quizCorrect}/5`;
     document.getElementById('q-text').textContent = `You scored ${quizCorrect} out of 5 (${Math.round(quizCorrect/5*100)}%).`;
     document.getElementById('q-feedback').className = 'mt-3 text-xs rounded-lg p-2.5 border bg-blue-500/10 border-blue-500/30 text-blue-400';
-    document.getElementById('q-feedback').textContent = quizCorrect>=4 ? '🌟 Excellent! Ready for the next module.' : quizCorrect>=3 ? '👍 Good work! Review the missed questions.' : '📖 Review the module material and try again.';
+    document.getElementById('q-feedback').textContent = quizCorrect>=4 ? 'ðŸŒŸ Excellent! Ready for the next module.' : quizCorrect>=3 ? 'ðŸ‘ Good work! Review the missed questions.' : 'ðŸ“– Review the module material and try again.';
     document.getElementById('q-feedback').classList.remove('hidden');
     document.getElementById('btn-next').classList.add('hidden');
     document.getElementById('btn-restart').classList.remove('hidden');
@@ -733,9 +755,9 @@ function nextQuestion() {
 
 function restartQuiz() { startQuiz(currentQuizMod); }
 
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  Skills Tracker                         */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function renderSkills() {
   const el = document.getElementById('skills-list');
   el.innerHTML = skills.map(s => {
@@ -773,7 +795,7 @@ function renderLearningPath() {
       <div class="flex items-center gap-3">
         <div class="flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs font-bold
           ${done ? 'bg-green-500/20 border-green-500 text-green-400' : pct>0 ? 'bg-[var(--primary)]/20 border-[var(--primary)] text-[var(--primary)]' : 'border-[var(--border)] text-[var(--muted-foreground)]'}">
-          ${done ? '✓' : i+1}
+          ${done ? 'âœ“' : i+1}
         </div>
         <div class="flex-1">
           <div class="flex justify-between text-xs">
@@ -787,9 +809,9 @@ function renderLearningPath() {
   }).join('');
 }
 
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  INIT                                   */
-/* ─────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 renderModuleCards();
 renderQuizSelector();
 renderSkills();
@@ -798,3 +820,4 @@ updateStats();
 </script>
 </body>
 </html>
+

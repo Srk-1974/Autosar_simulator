@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,41 +6,63 @@
 <title>AUTOSAR Training Simulator</title>
 <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
 <style>
-  /* ── scrollbar ── */
+  :root {
+    --background: #f1f5f9;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --sidebar: #f8fafc;
+    --border: #cbd5e1;
+    --muted-foreground: #64748b;
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #0f172a;
+      --foreground: #f8fafc;
+      --card: #1e293b;
+      --sidebar: #0f172a;
+      --border: #334155;
+      --muted-foreground: #94a3b8;
+      --primary: #3b82f6;
+      --primary-foreground: #ffffff;
+    }
+  }
+  /* â”€â”€ scrollbar â”€â”€ */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* ── tab underline animation ── */
+  /* â”€â”€ tab underline animation â”€â”€ */
   .tab-btn { transition: border-color 0.2s, color 0.2s; }
   .tab-btn.active { border-bottom: 2px solid var(--primary); color: var(--primary); }
 
-  /* ── module card hover ── */
+  /* â”€â”€ module card hover â”€â”€ */
   .mod-card { transition: transform 0.15s, box-shadow 0.15s; cursor: pointer; }
   .mod-card:hover { transform: translateY(-2px); }
 
-  /* ── gantt task bar ── */
+  /* â”€â”€ gantt task bar â”€â”€ */
   .gantt-bar { transition: width 0.4s ease; border-radius: 4px; }
 
-  /* ── terminal ── */
+  /* â”€â”€ terminal â”€â”€ */
   .terminal { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.5; }
   .terminal .ok  { color: #4ade80; }
   .terminal .err { color: #f87171; }
   .terminal .cmd { color: #60a5fa; }
   .terminal .info { color: #facc15; }
 
-  /* ── LIN bus wire ── */
+  /* â”€â”€ LIN bus wire â”€â”€ */
   .lin-wire { background: linear-gradient(90deg, #4ade80 0%, #4ade80 var(--fill, 0%), var(--border) var(--fill, 0%)); transition: --fill 0.3s; }
 
-  /* ── pulse animation ── */
+  /* â”€â”€ pulse animation â”€â”€ */
   @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
   .pulse { animation: pulse-dot 1.2s infinite; }
 
-  /* ── slideIn ── */
+  /* â”€â”€ slideIn â”€â”€ */
   @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
   .slide-in { animation: slideIn 0.3s ease; }
 
-  /* ── port connector ── */
+  /* â”€â”€ port connector â”€â”€ */
   .port-p { background: #4ade80; color: #000; }
   .port-r { background: #60a5fa; color: #000; }
   .port-connected { box-shadow: 0 0 0 2px #4ade80; }
@@ -52,14 +74,14 @@
 </head>
 <body class="bg-[var(--background)] text-[var(--foreground)] antialiased">
 
-<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <!--  HEADER                                                        -->
-<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="bg-[var(--sidebar)] border-b border-[var(--border)] px-5 py-3 flex items-center gap-3">
-  <div class="text-2xl">🚗</div>
+  <div class="text-2xl">ðŸš—</div>
   <div>
     <h1 class="font-bold text-base text-[var(--foreground)]">AUTOSAR Training Simulator</h1>
-    <p class="text-xs text-[var(--muted-foreground)]">Interactive Labs · 6 Modules · Classic + Adaptive Platform</p>
+    <p class="text-xs text-[var(--muted-foreground)]">Interactive Labs Â· 6 Modules Â· Classic + Adaptive Platform</p>
   </div>
   <div class="ml-auto flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
     <span id="progress-label">Module 1 of 6</span>
@@ -69,43 +91,43 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <!--  MODULE TABS                                                   -->
-<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="bg-[var(--card)] border-b border-[var(--border)] px-4 overflow-x-auto">
   <div class="flex gap-1 min-w-max">
     <button onclick="showModule(0)" id="tab-0" class="tab-btn active px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
-      🗂 M1: ARXML & SWC
+      ðŸ—‚ M1: ARXML & SWC
     </button>
     <button onclick="showModule(1)" id="tab-1" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
-      ⏱ M2: OS Scheduler
+      â± M2: OS Scheduler
     </button>
     <button onclick="showModule(2)" id="tab-2" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
-      💾 M3: NvM Lifecycle
+      ðŸ’¾ M3: NvM Lifecycle
     </button>
     <button onclick="showModule(3)" id="tab-3" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
-      🔧 M4: UDS Diagnostics
+      ðŸ”§ M4: UDS Diagnostics
     </button>
     <button onclick="showModule(4)" id="tab-4" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
-      📡 M5: LIN Stack
+      ðŸ“¡ M5: LIN Stack
     </button>
     <button onclick="showModule(5)" id="tab-5" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
-      🌐 M6: SOME/IP Adaptive
+      ðŸŒ M6: SOME/IP Adaptive
     </button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <!--  MODULE PANELS                                                 -->
-<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div id="modules-container" class="p-4 overflow-y-auto" style="max-height: calc(100vh - 110px)">
 
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <!-- MODULE 0: ARXML SWC Configurator         -->
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div id="module-0" class="module-panel slide-in">
     <div class="mb-3">
-      <h2 class="text-sm font-bold">Module 1 — ARXML & SWC Port Configuration</h2>
+      <h2 class="text-sm font-bold">Module 1 â€” ARXML & SWC Port Configuration</h2>
       <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Drag ports, connect SWCs, generate ARXML and inspect the RTE interface.</p>
     </div>
 
@@ -139,10 +161,10 @@
           <!-- filled by JS -->
         </div>
         <button onclick="connectPorts()" class="mt-3 bg-[var(--primary)] text-[var(--primary-foreground)] text-xs px-3 py-1.5 rounded font-medium hover:opacity-90 transition">
-          ⚡ Connect Ports
+          âš¡ Connect Ports
         </button>
         <button onclick="validateARXML()" class="mt-1.5 border border-[var(--border)] text-xs px-3 py-1.5 rounded font-medium hover:bg-[var(--card)] transition">
-          ✅ Validate ARXML
+          âœ… Validate ARXML
         </button>
         <div id="arxml-status" class="mt-2 text-xs text-center"></div>
       </div>
@@ -179,16 +201,16 @@
 
     <!-- Lab Checklist -->
     <div class="mt-3 bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
-      <div class="text-xs font-bold mb-2">📋 Lab 1A Checklist</div>
+      <div class="text-xs font-bold mb-2">ðŸ“‹ Lab 1A Checklist</div>
       <div class="space-y-1" id="lab1-checklist">
         <label class="flex items-center gap-2 text-xs cursor-pointer">
           <input type="checkbox" id="chk1-1" onchange="updateLab1Progress()" class="rounded"> Define SR_VehicleSpeed port interface
         </label>
         <label class="flex items-center gap-2 text-xs cursor-pointer">
-          <input type="checkbox" id="chk1-2" onchange="updateLab1Progress()" class="rounded"> Connect SpeedSensor P-PORT → SpeedControl R-PORT
+          <input type="checkbox" id="chk1-2" onchange="updateLab1Progress()" class="rounded"> Connect SpeedSensor P-PORT â†’ SpeedControl R-PORT
         </label>
         <label class="flex items-center gap-2 text-xs cursor-pointer">
-          <input type="checkbox" id="chk1-3" onchange="updateLab1Progress()" class="rounded"> Validate ARXML — 0 schema errors
+          <input type="checkbox" id="chk1-3" onchange="updateLab1Progress()" class="rounded"> Validate ARXML â€” 0 schema errors
         </label>
         <label class="flex items-center gap-2 text-xs cursor-pointer">
           <input type="checkbox" id="chk1-4" onchange="updateLab1Progress()" class="rounded"> Inspect generated Rte_Read_SpeedOutputPort() call
@@ -200,12 +222,12 @@
     </div>
   </div>
 
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <!-- MODULE 1: OS Task Scheduler              -->
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div id="module-1" class="module-panel hidden slide-in">
     <div class="mb-3">
-      <h2 class="text-sm font-bold">Module 2 — OS Task Scheduler Visualizer</h2>
+      <h2 class="text-sm font-bold">Module 2 â€” OS Task Scheduler Visualizer</h2>
       <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Configure tasks, set priorities, and observe the AUTOSAR OS scheduling behavior in real-time.</p>
     </div>
 
@@ -240,18 +262,18 @@
           </div>
           <div class="flex justify-between">
             <span class="text-[var(--muted-foreground)]">Active Task</span>
-            <span id="active-task" class="font-mono text-[var(--primary)]">—</span>
+            <span id="active-task" class="font-mono text-[var(--primary)]">â€”</span>
           </div>
         </div>
         <div class="mt-3 flex gap-2">
           <button onclick="startScheduler()" id="btn-start" class="flex-1 bg-[var(--primary)] text-[var(--primary-foreground)] text-xs py-1.5 rounded font-medium hover:opacity-90 transition">
-            ▶ Start
+            â–¶ Start
           </button>
           <button onclick="stopScheduler()" class="flex-1 border border-[var(--border)] text-xs py-1.5 rounded font-medium hover:bg-[var(--sidebar)] transition">
-            ⏹ Stop
+            â¹ Stop
           </button>
           <button onclick="injectOverload()" class="flex-1 border border-red-500/30 text-red-400 text-xs py-1.5 rounded font-medium hover:bg-red-500/10 transition">
-            ⚠ Overload
+            âš  Overload
           </button>
         </div>
       </div>
@@ -271,17 +293,17 @@
     <div class="mt-3 bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
       <div class="text-xs font-bold mb-1">OS Event Log</div>
       <div id="os-log" class="terminal h-24 overflow-y-auto text-[var(--muted-foreground)]">
-        <div class="info">[OS] AUTOSAR OS initialized — OSDEFAULTAPPMODE</div>
+        <div class="info">[OS] AUTOSAR OS initialized â€” OSDEFAULTAPPMODE</div>
       </div>
     </div>
   </div>
 
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <!-- MODULE 2: NvM Lifecycle                  -->
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div id="module-2" class="module-panel hidden slide-in">
     <div class="mb-3">
-      <h2 class="text-sm font-bold">Module 3 — NvM Block Lifecycle Simulator</h2>
+      <h2 class="text-sm font-bold">Module 3 â€” NvM Block Lifecycle Simulator</h2>
       <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Simulate ECU startup ReadAll, block writes, power-cut recovery and default value restoration.</p>
     </div>
 
@@ -295,22 +317,22 @@
       <div class="text-xs font-bold mb-2">NvM Operations</div>
       <div class="flex flex-wrap gap-2">
         <button onclick="nvmReadAll()" class="bg-[var(--primary)] text-[var(--primary-foreground)] text-xs px-3 py-1.5 rounded font-medium hover:opacity-90">
-          📖 NvM_ReadAll (Startup)
+          ðŸ“– NvM_ReadAll (Startup)
         </button>
         <button onclick="nvmWriteBlock(0)" class="border border-[var(--border)] text-xs px-3 py-1.5 rounded hover:bg-[var(--sidebar)]">
-          ✏️ Write Block 1
+          âœï¸ Write Block 1
         </button>
         <button onclick="nvmWriteBlock(1)" class="border border-[var(--border)] text-xs px-3 py-1.5 rounded hover:bg-[var(--sidebar)]">
-          ✏️ Write Block 2
+          âœï¸ Write Block 2
         </button>
         <button onclick="nvmInvalidate(2)" class="border border-[var(--border)] text-xs px-3 py-1.5 rounded hover:bg-[var(--sidebar)]">
-          🗑 Invalidate Block 3
+          ðŸ—‘ Invalidate Block 3
         </button>
         <button onclick="nvmPowerCut()" class="border border-red-500/30 text-red-400 text-xs px-3 py-1.5 rounded hover:bg-red-500/10">
-          ⚡ Simulate Power Cut
+          âš¡ Simulate Power Cut
         </button>
         <button onclick="nvmWriteAll()" class="border border-[var(--border)] text-xs px-3 py-1.5 rounded hover:bg-[var(--sidebar)]">
-          💾 NvM_WriteAll (Shutdown)
+          ðŸ’¾ NvM_WriteAll (Shutdown)
         </button>
       </div>
     </div>
@@ -319,7 +341,7 @@
     <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
       <div class="text-xs font-bold mb-1">NvM Operation Log</div>
       <div id="nvm-log" class="terminal h-36 overflow-y-auto">
-        <div class="info">[NvM] Module initialized — 3 blocks configured</div>
+        <div class="info">[NvM] Module initialized â€” 3 blocks configured</div>
         <div class="info">[NvM] Block 1: TargetSpeed (REDUNDANT, 4 bytes)</div>
         <div class="info">[NvM] Block 2: Odometer (NATIVE, 4 bytes)</div>
         <div class="info">[NvM] Block 3: DEM data (NATIVE, 64 bytes)</div>
@@ -327,12 +349,12 @@
     </div>
   </div>
 
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <!-- MODULE 3: UDS Diagnostics Console        -->
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div id="module-3" class="module-panel hidden slide-in">
     <div class="mb-3">
-      <h2 class="text-sm font-bold">Module 4 — UDS Diagnostic Console</h2>
+      <h2 class="text-sm font-bold">Module 4 â€” UDS Diagnostic Console</h2>
       <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Send UDS requests in hex and observe ECU responses. Walk through session management, security access, DID read/write, and routine control.</p>
     </div>
 
@@ -344,11 +366,11 @@
       </div>
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center">
         <div class="text-xs text-[var(--muted-foreground)]">Security</div>
-        <div id="uds-security" class="text-xs font-bold mt-0.5 text-red-400">LOCKED 🔒</div>
+        <div id="uds-security" class="text-xs font-bold mt-0.5 text-red-400">LOCKED ðŸ”’</div>
       </div>
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center">
         <div class="text-xs text-[var(--muted-foreground)]">Speed DID</div>
-        <div id="uds-speed-did" class="text-xs font-bold mt-0.5">— km/h</div>
+        <div id="uds-speed-did" class="text-xs font-bold mt-0.5">â€” km/h</div>
       </div>
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center">
         <div class="text-xs text-[var(--muted-foreground)]">Active DTC</div>
@@ -360,16 +382,16 @@
     <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3 mb-3">
       <div class="text-xs font-bold mb-2">Quick UDS Actions</div>
       <div class="flex flex-wrap gap-1.5">
-        <button onclick="udsAction('startExtSession')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x10 03 — Extended Session</button>
-        <button onclick="udsAction('startProgSession')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x10 02 — Programming Session</button>
-        <button onclick="udsAction('requestSeed')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x27 01 — Request Seed</button>
-        <button onclick="udsAction('sendKey')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x27 02 — Send Key</button>
-        <button onclick="udsAction('readSpeed')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x22 10 01 — Read Speed</button>
-        <button onclick="udsAction('writeSpeed')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x2E 20 01 — Write Speed</button>
-        <button onclick="udsAction('startRoutine')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x31 01 — Start Routine</button>
-        <button onclick="udsAction('readDtc')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x19 02 — Read DTCs</button>
-        <button onclick="udsAction('clearDtc')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x14 — Clear DTCs</button>
-        <button onclick="udsAction('ecuReset')" class="text-xs px-2 py-1 border border-red-500/30 text-red-400 rounded hover:bg-red-500/10 transition">0x11 01 — ECU Reset</button>
+        <button onclick="udsAction('startExtSession')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x10 03 â€” Extended Session</button>
+        <button onclick="udsAction('startProgSession')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x10 02 â€” Programming Session</button>
+        <button onclick="udsAction('requestSeed')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x27 01 â€” Request Seed</button>
+        <button onclick="udsAction('sendKey')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x27 02 â€” Send Key</button>
+        <button onclick="udsAction('readSpeed')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x22 10 01 â€” Read Speed</button>
+        <button onclick="udsAction('writeSpeed')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x2E 20 01 â€” Write Speed</button>
+        <button onclick="udsAction('startRoutine')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x31 01 â€” Start Routine</button>
+        <button onclick="udsAction('readDtc')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x19 02 â€” Read DTCs</button>
+        <button onclick="udsAction('clearDtc')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x14 â€” Clear DTCs</button>
+        <button onclick="udsAction('ecuReset')" class="text-xs px-2 py-1 border border-red-500/30 text-red-400 rounded hover:bg-red-500/10 transition">0x11 01 â€” ECU Reset</button>
       </div>
     </div>
 
@@ -377,18 +399,18 @@
     <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
       <div class="text-xs font-bold mb-1">UDS Communication Log (ISO 14229)</div>
       <div id="uds-log" class="terminal h-44 overflow-y-auto">
-        <div class="info">[UDS] ECU online — Tester connected on CAN 0x7DF/0x7E8</div>
+        <div class="info">[UDS] ECU online â€” Tester connected on CAN 0x7DF/0x7E8</div>
         <div class="info">[UDS] Default Diagnostic Session active</div>
       </div>
     </div>
   </div>
 
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <!-- MODULE 4: LIN Stack                      -->
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div id="module-4" class="module-panel hidden slide-in">
     <div class="mb-3">
-      <h2 class="text-sm font-bold">Module 5 — LIN Bus Frame Analyzer</h2>
+      <h2 class="text-sm font-bold">Module 5 â€” LIN Bus Frame Analyzer</h2>
       <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Simulate LIN master/slave communication, observe frame scheduling, and inject bus errors.</p>
     </div>
 
@@ -445,15 +467,15 @@
           <tbody id="lin-schedule-table">
             <tr>
               <td class="py-0.5">WindowPos</td><td class="font-mono">0x01</td><td>20ms</td>
-              <td id="lin-row-0" class="text-[var(--muted-foreground)]">—</td>
+              <td id="lin-row-0" class="text-[var(--muted-foreground)]">â€”</td>
             </tr>
             <tr>
               <td class="py-0.5">FanSpeed</td><td class="font-mono">0x02</td><td>20ms</td>
-              <td id="lin-row-1" class="text-[var(--muted-foreground)]">—</td>
+              <td id="lin-row-1" class="text-[var(--muted-foreground)]">â€”</td>
             </tr>
             <tr>
               <td class="py-0.5">MotorTemp</td><td class="font-mono">0x03</td><td>100ms</td>
-              <td id="lin-row-2" class="text-[var(--muted-foreground)]">—</td>
+              <td id="lin-row-2" class="text-[var(--muted-foreground)]">â€”</td>
             </tr>
           </tbody>
         </table>
@@ -464,13 +486,13 @@
         <div class="text-xs font-bold mb-2">Simulation Controls</div>
         <div class="flex flex-col gap-2">
           <button onclick="startLIN()" id="lin-start-btn" class="bg-[var(--primary)] text-[var(--primary-foreground)] text-xs py-1.5 rounded font-medium hover:opacity-90">
-            ▶ Start LIN Scheduler
+            â–¶ Start LIN Scheduler
           </button>
           <button onclick="stopLIN()" class="border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--sidebar)]">
-            ⏹ Stop
+            â¹ Stop
           </button>
           <button onclick="injectLINError()" class="border border-red-500/30 text-red-400 text-xs py-1.5 rounded hover:bg-red-500/10">
-            💥 Inject Checksum Error
+            ðŸ’¥ Inject Checksum Error
           </button>
           <div class="flex items-center justify-between text-xs mt-1">
             <span class="text-[var(--muted-foreground)]">Window Position:</span>
@@ -492,19 +514,19 @@
     <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
       <div class="text-xs font-bold mb-1">LIN Frame Log</div>
       <div id="lin-log" class="terminal h-32 overflow-y-auto">
-        <div class="info">[LIN] Master initialized — Schedule table loaded (3 frames)</div>
+        <div class="info">[LIN] Master initialized â€” Schedule table loaded (3 frames)</div>
         <div class="info">[LIN] Slave 1 (Window Motor) online</div>
         <div class="info">[LIN] Slave 2 (HVAC Fan) online</div>
       </div>
     </div>
   </div>
 
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <!-- MODULE 5: SOME/IP Adaptive               -->
-  <!-- ───────────────────────────────────────── -->
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <div id="module-5" class="module-panel hidden slide-in">
     <div class="mb-3">
-      <h2 class="text-sm font-bold">Module 6 — AUTOSAR Adaptive: ara::com & SOME/IP</h2>
+      <h2 class="text-sm font-bold">Module 6 â€” AUTOSAR Adaptive: ara::com & SOME/IP</h2>
       <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Simulate SOME/IP service discovery, method calls, and event subscriptions between Adaptive ECUs.</p>
     </div>
 
@@ -539,7 +561,7 @@
             </div>
           </div>
           <button onclick="offerService()" class="mt-2 w-full bg-[var(--primary)] text-[var(--primary-foreground)] text-xs py-1.5 rounded font-medium hover:opacity-90">
-            📡 OfferService()
+            ðŸ“¡ OfferService()
           </button>
           <button onclick="stopOffer()" class="mt-1 w-full border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--card)]">
             StopOfferService()
@@ -553,7 +575,7 @@
             <div class="w-1 h-8 bg-[var(--border)] rounded-full relative overflow-hidden">
               <div id="pkt-up" class="absolute w-full rounded-full transition-all duration-500" style="height:0%;bottom:0;background:var(--primary)"></div>
             </div>
-            <div class="text-xs text-[var(--muted-foreground)] font-mono" id="net-label">—</div>
+            <div class="text-xs text-[var(--muted-foreground)] font-mono" id="net-label">â€”</div>
             <div class="w-1 h-8 bg-[var(--border)] rounded-full relative overflow-hidden">
               <div id="pkt-down" class="absolute w-full rounded-full transition-all duration-500" style="height:0%;top:0;background:#4ade80"></div>
             </div>
@@ -579,7 +601,7 @@
             </div>
             <div class="flex justify-between">
               <span class="text-[var(--muted-foreground)]">Last Speed</span>
-              <span id="client-last-speed" class="font-mono">—</span>
+              <span id="client-last-speed" class="font-mono">â€”</span>
             </div>
             <div class="flex justify-between">
               <span class="text-[var(--muted-foreground)]">Events rcvd</span>
@@ -587,13 +609,13 @@
             </div>
           </div>
           <button onclick="findService()" class="mt-2 w-full border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--card)]">
-            🔍 FindService()
+            ðŸ” FindService()
           </button>
           <button onclick="subscribeEvent()" class="mt-1 w-full border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--card)]">
-            📥 Subscribe SpeedChanged
+            ðŸ“¥ Subscribe SpeedChanged
           </button>
           <button onclick="callMethod()" class="mt-1 w-full border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--card)]">
-            ⚡ GetCurrentSpeed()
+            âš¡ GetCurrentSpeed()
           </button>
         </div>
       </div>
@@ -612,16 +634,16 @@
 
 </div><!-- end modules-container -->
 
-<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <!--  JAVASCRIPT                                                    -->
-<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <script>
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /* Global State                                 */
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let currentModule = 0;
 
-/* ── Module switching ── */
+/* â”€â”€ Module switching â”€â”€ */
 function showModule(idx) {
   document.querySelectorAll('.module-panel').forEach(p => p.classList.add('hidden'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -637,9 +659,9 @@ function showModule(idx) {
   document.getElementById('progress-label').textContent = `Module ${idx+1} of 6`;
 }
 
-/* ──────────────────────────────────────────── */
-/* MODULE 1 — ARXML & SWC                       */
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* MODULE 1 â€” ARXML & SWC                       */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let portsConnected = false;
 
 function connectPorts() {
@@ -651,14 +673,14 @@ function connectPorts() {
     <div class="flex items-center gap-1 bg-[var(--sidebar)] rounded p-1.5">
       <span class="port-p text-xs px-1 rounded font-mono font-bold">P</span>
       <span class="text-[var(--muted-foreground)]">SpeedOutputPort</span>
-      <span class="text-[var(--primary)]">→</span>
+      <span class="text-[var(--primary)]">â†’</span>
       <span class="port-r text-xs px-1 rounded font-mono font-bold">R</span>
       <span class="text-[var(--muted-foreground)]">SpeedInputPort</span>
     </div>
     <div class="flex items-center gap-1 bg-[var(--sidebar)] rounded p-1.5 mt-1">
       <span class="port-p text-xs px-1 rounded font-mono font-bold">P</span>
       <span class="text-[var(--muted-foreground)]">ThrottleOutputPort</span>
-      <span class="text-green-400">✓ open</span>
+      <span class="text-green-400">âœ“ open</span>
     </div>`;
   document.getElementById('chk1-2').checked = true;
   updateLab1Progress();
@@ -666,13 +688,13 @@ function connectPorts() {
 
 function validateARXML() {
   if (!portsConnected) {
-    document.getElementById('arxml-status').innerHTML = '<span class="text-red-400">❌ Connect ports first</span>';
+    document.getElementById('arxml-status').innerHTML = '<span class="text-red-400">âŒ Connect ports first</span>';
     return;
   }
-  document.getElementById('arxml-status').innerHTML = '<span class="text-[var(--primary)] pulse">⏳ Validating…</span>';
+  document.getElementById('arxml-status').innerHTML = '<span class="text-[var(--primary)] pulse">â³ Validatingâ€¦</span>';
   setTimeout(() => {
-    document.getElementById('arxml-status').innerHTML = '<span class="text-green-400">✅ ARXML valid — 0 errors</span>';
-    document.getElementById('rte-badge').textContent = '✅ Generated';
+    document.getElementById('arxml-status').innerHTML = '<span class="text-green-400">âœ… ARXML valid â€” 0 errors</span>';
+    document.getElementById('rte-badge').textContent = 'âœ… Generated';
     document.getElementById('rte-badge').className = 'text-xs px-2 py-0.5 rounded bg-green-500/20 text-green-400';
     document.getElementById('rte-output').textContent =
 `/* ===== AUTO-GENERATED by AUTOSAR RTE Tool ===== */
@@ -704,9 +726,9 @@ function updateLab1Progress() {
   document.getElementById('lab1-progress').style.width = (done / checks.length * 100) + '%';
 }
 
-/* ──────────────────────────────────────────── */
-/* MODULE 2 — OS Scheduler                      */
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* MODULE 2 â€” OS Scheduler                      */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const osTasks = [
   { name: 'Task_10ms',    priority: 10, period: 10,  runtime: 2,  color: '#60a5fa' },
   { name: 'Task_20ms',    priority: 8,  period: 20,  runtime: 3,  color: '#4ade80' },
@@ -752,7 +774,7 @@ function startScheduler() {
   if (osInterval) return;
   sysTick = 0; deadlineMisses = 0; ganttData = [];
   overloadActive = false;
-  osLog('[OS] Scheduler started — OSDEFAULTAPPMODE');
+  osLog('[OS] Scheduler started â€” OSDEFAULTAPPMODE');
   osInterval = setInterval(schedulerTick, 50);
 }
 
@@ -763,7 +785,7 @@ function stopScheduler() {
 
 function injectOverload() {
   overloadActive = true;
-  osLog('<span class="err">[OS] ⚠ Overload injected! Task_10ms runtime doubled</span>');
+  osLog('<span class="err">[OS] âš  Overload injected! Task_10ms runtime doubled</span>');
 }
 
 let tickCounter = 0;
@@ -779,7 +801,7 @@ function schedulerTick() {
       if (Math.random() < 0.15) {
         const rt = t.runtime;
         ganttData.push({ task: ti, start: tick, end: tick + rt });
-        if (tickCounter % 8 === 0) osLog(`<span class="cmd">[ISR] ${t.name} fired — latency 0.3ms</span>`);
+        if (tickCounter % 8 === 0) osLog(`<span class="cmd">[ISR] ${t.name} fired â€” latency 0.3ms</span>`);
       }
       return;
     }
@@ -791,12 +813,12 @@ function schedulerTick() {
         deadlineMisses++;
         document.getElementById('deadline-miss').textContent = deadlineMisses;
         document.getElementById('deadline-miss').className = 'font-mono text-red-400';
-        osLog(`<span class="err">[OS] ❌ Deadline MISS: ${t.name} (runtime ${rt.toFixed(1)}ms > period ${t.period}ms)</span>`);
+        osLog(`<span class="err">[OS] âŒ Deadline MISS: ${t.name} (runtime ${rt.toFixed(1)}ms > period ${t.period}ms)</span>`);
       }
       ganttData.push({ task: ti, start: tick, end: tick + rt, miss });
       document.getElementById('active-task').textContent = t.name;
       if (tickCounter % 5 === 0 && !miss) {
-        osLog(`<span class="ok">[OS] ✓ ${t.name} activated @ ${tick}ms</span>`);
+        osLog(`<span class="ok">[OS] âœ“ ${t.name} activated @ ${tick}ms</span>`);
       }
     }
   });
@@ -818,9 +840,9 @@ function osLog(msg) {
   el.scrollTop = el.scrollHeight;
 }
 
-/* ──────────────────────────────────────────── */
-/* MODULE 3 — NvM Lifecycle                     */
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* MODULE 3 â€” NvM Lifecycle                     */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const nvmBlocks = [
   { id: 1, name: 'TargetSpeed', type: 'REDUNDANT', size: 4,  state: 'INVALID', value: null, dirty: false, color: '#60a5fa' },
   { id: 2, name: 'Odometer',    type: 'NATIVE',    size: 4,  state: 'INVALID', value: null, dirty: false, color: '#4ade80' },
@@ -845,7 +867,7 @@ function renderNvmBlocks() {
           </div>
           <div class="flex justify-between">
             <span class="text-[var(--muted-foreground)]">Value</span>
-            <span class="font-mono">${b.value !== null ? b.value : '—'}</span>
+            <span class="font-mono">${b.value !== null ? b.value : 'â€”'}</span>
           </div>
           <div class="flex justify-between">
             <span class="text-[var(--muted-foreground)]">Size</span>
@@ -866,7 +888,7 @@ function nvmLog(msg, type='info') {
 }
 
 function nvmReadAll() {
-  nvmLog('[NvM] NvM_ReadAll() called — startup sequence', 'info');
+  nvmLog('[NvM] NvM_ReadAll() called â€” startup sequence', 'info');
   nvmBlocks.forEach((b, i) => {
     b.state = 'READING';
     renderNvmBlocks();
@@ -874,11 +896,11 @@ function nvmReadAll() {
       if (i === 2) {
         b.state = 'INVALID';
         b.value = null;
-        nvmLog(`[NvM] Block ${b.id} (${b.name}): NVM_REQ_NV_INVALIDATED → default applied`, 'err');
+        nvmLog(`[NvM] Block ${b.id} (${b.name}): NVM_REQ_NV_INVALIDATED â†’ default applied`, 'err');
       } else {
         b.state = 'OK';
         b.value = i === 0 ? '80.0 km/h' : '52341 km';
-        nvmLog(`<span class="ok">[NvM] Block ${b.id} (${b.name}): NVM_REQ_OK — value restored</span>`);
+        nvmLog(`<span class="ok">[NvM] Block ${b.id} (${b.name}): NVM_REQ_OK â€” value restored</span>`);
       }
       renderNvmBlocks();
     }, 600 + i * 500);
@@ -888,7 +910,7 @@ function nvmReadAll() {
 function nvmWriteBlock(idx) {
   const b = nvmBlocks[idx];
   const newVal = idx === 0 ? '100.0 km/h' : '52342 km';
-  nvmLog(`[NvM] NvM_WriteBlock(${b.id}) queued — new value: ${newVal}`);
+  nvmLog(`[NvM] NvM_WriteBlock(${b.id}) queued â€” new value: ${newVal}`);
   b.state = 'DIRTY'; b.dirty = true; b.value = newVal;
   renderNvmBlocks();
   setTimeout(() => {
@@ -897,7 +919,7 @@ function nvmWriteBlock(idx) {
     setTimeout(() => {
       b.state = 'OK'; b.dirty = false;
       renderNvmBlocks();
-      nvmLog(`<span class="ok">[NvM] Block ${b.id} write complete — Flash updated</span>`);
+      nvmLog(`<span class="ok">[NvM] Block ${b.id} write complete â€” Flash updated</span>`);
     }, 700);
   }, 300);
 }
@@ -910,23 +932,23 @@ function nvmInvalidate(idx) {
 }
 
 function nvmPowerCut() {
-  nvmLog('<span class="err">[POWER] ⚡ Sudden power loss simulated during write!</span>');
+  nvmLog('<span class="err">[POWER] âš¡ Sudden power loss simulated during write!</span>');
   nvmBlocks[0].state = 'WRITING';
   renderNvmBlocks();
   setTimeout(() => {
-    nvmLog('<span class="err">[NvM] ⚡ Write interrupted! Checking REDUNDANT copy…</span>');
+    nvmLog('<span class="err">[NvM] âš¡ Write interrupted! Checking REDUNDANT copyâ€¦</span>');
     setTimeout(() => {
       nvmBlocks[0].state = 'OK';
       nvmBlocks[0].value = '80.0 km/h (recovered)';
       renderNvmBlocks();
-      nvmLog('<span class="ok">[NvM] ✅ Redundant block intact — data recovered successfully!</span>');
+      nvmLog('<span class="ok">[NvM] âœ… Redundant block intact â€” data recovered successfully!</span>');
     }, 800);
   }, 400);
 }
 
 function nvmWriteAll() {
   const dirty = nvmBlocks.filter(b => b.dirty || b.state === 'OK');
-  nvmLog(`[NvM] NvM_WriteAll() — shutdown sequence (${dirty.length} blocks)`);
+  nvmLog(`[NvM] NvM_WriteAll() â€” shutdown sequence (${dirty.length} blocks)`);
   dirty.forEach((b, i) => {
     setTimeout(() => {
       b.state = 'WRITING';
@@ -940,9 +962,9 @@ function nvmWriteAll() {
   });
 }
 
-/* ──────────────────────────────────────────── */
-/* MODULE 4 — UDS Diagnostics                   */
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* MODULE 4 â€” UDS Diagnostics                   */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let udsSession = 'DEFAULT';
 let udsSecured = false;
 let udsSeed = null;
@@ -961,130 +983,130 @@ function udsAction(action) {
     startExtSession: () => {
       udsSession = 'EXTENDED';
       document.getElementById('uds-session').textContent = 'EXTENDED (03)';
-      udsLog('<span class="cmd">→ TX: 02 10 03 FF FF FF FF FF</span>');
+      udsLog('<span class="cmd">â†’ TX: 02 10 03 FF FF FF FF FF</span>');
       setTimeout(() => {
-        udsLog('<span class="ok">← RX: 06 50 03 00 19 01 F4 FF  [PositiveResponse | P2=25ms P2*=500ms]</span>');
+        udsLog('<span class="ok">â† RX: 06 50 03 00 19 01 F4 FF  [PositiveResponse | P2=25ms P2*=500ms]</span>');
       }, 120);
     },
     startProgSession: () => {
       if (!udsSecured) {
-        udsLog('<span class="err">← RX: 03 7F 10 33 FF FF FF FF  [NRC: securityAccessDenied]</span>');
+        udsLog('<span class="err">â† RX: 03 7F 10 33 FF FF FF FF  [NRC: securityAccessDenied]</span>');
         return;
       }
       udsSession = 'PROGRAMMING';
       document.getElementById('uds-session').textContent = 'PROGRAMMING (02)';
-      udsLog('<span class="cmd">→ TX: 02 10 02 FF FF FF FF FF</span>');
-      setTimeout(() => udsLog('<span class="ok">← RX: 02 50 02 FF FF FF FF FF  [PositiveResponse]</span>'), 120);
+      udsLog('<span class="cmd">â†’ TX: 02 10 02 FF FF FF FF FF</span>');
+      setTimeout(() => udsLog('<span class="ok">â† RX: 02 50 02 FF FF FF FF FF  [PositiveResponse]</span>'), 120);
     },
     requestSeed: () => {
       if (udsSession === 'DEFAULT') {
-        udsLog('<span class="err">← RX: 03 7F 27 22 FF FF FF FF  [NRC: conditionsNotCorrect]</span>');
+        udsLog('<span class="err">â† RX: 03 7F 27 22 FF FF FF FF  [NRC: conditionsNotCorrect]</span>');
         return;
       }
       udsSeed = Math.floor(Math.random() * 0xFFFFFFFF);
       const s = udsSeed.toString(16).padStart(8,'0').toUpperCase();
-      udsLog('<span class="cmd">→ TX: 02 27 01 FF FF FF FF FF</span>');
+      udsLog('<span class="cmd">â†’ TX: 02 27 01 FF FF FF FF FF</span>');
       setTimeout(() => {
-        udsLog(`<span class="ok">← RX: 06 67 01 ${s.match(/.{2}/g).join(' ')} FF  [Seed generated]</span>`);
+        udsLog(`<span class="ok">â† RX: 06 67 01 ${s.match(/.{2}/g).join(' ')} FF  [Seed generated]</span>`);
       }, 80);
     },
     sendKey: () => {
-      if (!udsSeed) { udsLog('<span class="err">← Request seed first (0x27 01)</span>'); return; }
+      if (!udsSeed) { udsLog('<span class="err">â† Request seed first (0x27 01)</span>'); return; }
       const key = (udsSeed ^ 0xC0FFEE42) >>> 0;
       const k = key.toString(16).padStart(8,'0').toUpperCase();
-      udsLog(`<span class="cmd">→ TX: 06 27 02 ${k.match(/.{2}/g).join(' ')} FF</span>`);
+      udsLog(`<span class="cmd">â†’ TX: 06 27 02 ${k.match(/.{2}/g).join(' ')} FF</span>`);
       udsAttempts++;
       setTimeout(() => {
         if (udsAttempts <= 3) {
           udsSecured = true;
-          document.getElementById('uds-security').textContent = 'UNLOCKED 🔓';
+          document.getElementById('uds-security').textContent = 'UNLOCKED ðŸ”“';
           document.getElementById('uds-security').className = 'text-xs font-bold mt-0.5 text-green-400';
-          udsLog('<span class="ok">← RX: 02 67 02 FF FF FF FF FF  [Security access granted ✅]</span>');
+          udsLog('<span class="ok">â† RX: 02 67 02 FF FF FF FF FF  [Security access granted âœ…]</span>');
         } else {
-          udsLog('<span class="err">← RX: 03 7F 27 36 FF FF FF FF  [NRC: exceededNumberOfAttempts — 10min lockout]</span>');
+          udsLog('<span class="err">â† RX: 03 7F 27 36 FF FF FF FF  [NRC: exceededNumberOfAttempts â€” 10min lockout]</span>');
         }
       }, 100);
     },
     readSpeed: () => {
       const v = Math.round(udsSpeed * 10);
       const h = v.toString(16).padStart(4,'0').toUpperCase();
-      udsLog('<span class="cmd">→ TX: 03 22 10 01 FF FF FF FF</span>');
+      udsLog('<span class="cmd">â†’ TX: 03 22 10 01 FF FF FF FF</span>');
       setTimeout(() => {
-        udsLog(`<span class="ok">← RX: 05 62 10 01 ${h.match(/.{2}/g).join(' ')} FF  [Speed=${udsSpeed} km/h]</span>`);
+        udsLog(`<span class="ok">â† RX: 05 62 10 01 ${h.match(/.{2}/g).join(' ')} FF  [Speed=${udsSpeed} km/h]</span>`);
         document.getElementById('uds-speed-did').textContent = udsSpeed.toFixed(1) + ' km/h';
       }, 80);
     },
     writeSpeed: () => {
       if (!udsSecured) {
-        udsLog('<span class="err">← RX: 03 7F 2E 33 FF FF FF FF  [NRC: securityAccessDenied]</span>');
+        udsLog('<span class="err">â† RX: 03 7F 2E 33 FF FF FF FF  [NRC: securityAccessDenied]</span>');
         return;
       }
       const newSpeed = 120.0;
       const v = Math.round(newSpeed * 10);
       const h = v.toString(16).padStart(4,'0').toUpperCase();
-      udsLog(`<span class="cmd">→ TX: 05 2E 20 01 ${h.match(/.{2}/g).join(' ')} FF</span>`);
+      udsLog(`<span class="cmd">â†’ TX: 05 2E 20 01 ${h.match(/.{2}/g).join(' ')} FF</span>`);
       setTimeout(() => {
         udsSpeed = newSpeed;
-        udsLog('<span class="ok">← RX: 03 6E 20 01 FF FF FF FF  [WriteDataByIdentifier OK — DID 0x2001 updated]</span>');
+        udsLog('<span class="ok">â† RX: 03 6E 20 01 FF FF FF FF  [WriteDataByIdentifier OK â€” DID 0x2001 updated]</span>');
         document.getElementById('uds-speed-did').textContent = newSpeed + ' km/h';
       }, 100);
     },
     startRoutine: () => {
       if (!udsSecured) {
-        udsLog('<span class="err">← RX: 03 7F 31 33 FF FF FF FF  [NRC: securityAccessDenied]</span>');
+        udsLog('<span class="err">â† RX: 03 7F 31 33 FF FF FF FF  [NRC: securityAccessDenied]</span>');
         return;
       }
-      udsLog('<span class="cmd">→ TX: 04 31 01 01 00 FF FF FF  [startRoutine 0x0100: SpeedSensor SelfTest]</span>');
+      udsLog('<span class="cmd">â†’ TX: 04 31 01 01 00 FF FF FF  [startRoutine 0x0100: SpeedSensor SelfTest]</span>');
       setTimeout(() => {
-        udsLog('<span class="ok">← RX: 04 71 01 01 00 FF FF FF  [Routine started]</span>');
+        udsLog('<span class="ok">â† RX: 04 71 01 01 00 FF FF FF  [Routine started]</span>');
         setTimeout(() => {
-          udsLog('<span class="cmd">→ TX: 04 31 03 01 00 FF FF FF  [requestRoutineResults]</span>');
+          udsLog('<span class="cmd">â†’ TX: 04 31 03 01 00 FF FF FF  [requestRoutineResults]</span>');
           setTimeout(() => {
-            udsLog('<span class="ok">← RX: 05 71 03 01 00 00 FF FF  [Routine PASSED ✅ — Result=0x00]</span>');
+            udsLog('<span class="ok">â† RX: 05 71 03 01 00 00 FF FF  [Routine PASSED âœ… â€” Result=0x00]</span>');
           }, 80);
         }, 600);
       }, 80);
     },
     readDtc: () => {
-      udsLog('<span class="cmd">→ TX: 03 19 02 FF FF FF FF FF  [reportDTCByStatusMask, mask=0xFF]</span>');
+      udsLog('<span class="cmd">â†’ TX: 03 19 02 FF FF FF FF FF  [reportDTCByStatusMask, mask=0xFF]</span>');
       setTimeout(() => {
         if (udsDtcs.length === 0) {
-          udsLog('<span class="ok">← RX: 02 59 02 FF FF FF FF FF  [No DTCs stored]</span>');
+          udsLog('<span class="ok">â† RX: 02 59 02 FF FF FF FF FF  [No DTCs stored]</span>');
         } else {
           const dtcStr = udsDtcs.map(d => d.hex).join(' ');
-          udsLog(`<span class="ok">← RX: ${udsDtcs.length} DTC(s): ${dtcStr}  [P0500 SpeedSensor fault]</span>`);
+          udsLog(`<span class="ok">â† RX: ${udsDtcs.length} DTC(s): ${dtcStr}  [P0500 SpeedSensor fault]</span>`);
         }
       }, 80);
     },
     clearDtc: () => {
-      udsLog('<span class="cmd">→ TX: 04 14 FF FF FF FF FF FF  [clearDiagnosticInformation, group=0xFFFFFF]</span>');
+      udsLog('<span class="cmd">â†’ TX: 04 14 FF FF FF FF FF FF  [clearDiagnosticInformation, group=0xFFFFFF]</span>');
       setTimeout(() => {
         udsDtcs = [];
         document.getElementById('uds-dtc-count').textContent = '0';
-        udsLog('<span class="ok">← RX: 01 54 FF FF FF FF FF FF  [All DTCs cleared ✅]</span>');
+        udsLog('<span class="ok">â† RX: 01 54 FF FF FF FF FF FF  [All DTCs cleared âœ…]</span>');
       }, 200);
     },
     ecuReset: () => {
-      udsLog('<span class="cmd">→ TX: 02 11 01 FF FF FF FF FF  [ecuReset: hardReset]</span>');
+      udsLog('<span class="cmd">â†’ TX: 02 11 01 FF FF FF FF FF  [ecuReset: hardReset]</span>');
       setTimeout(() => {
-        udsLog('<span class="ok">← RX: 02 51 01 FF FF FF FF FF  [ECU resetting…]</span>');
+        udsLog('<span class="ok">â† RX: 02 51 01 FF FF FF FF FF  [ECU resettingâ€¦]</span>');
         udsSession = 'DEFAULT';
         udsSecured = false;
         udsSeed = null;
         udsAttempts = 0;
         document.getElementById('uds-session').textContent = 'DEFAULT (01)';
-        document.getElementById('uds-security').textContent = 'LOCKED 🔒';
+        document.getElementById('uds-security').textContent = 'LOCKED ðŸ”’';
         document.getElementById('uds-security').className = 'text-xs font-bold mt-0.5 text-red-400';
-        setTimeout(() => udsLog('<span class="info">[UDS] ECU restarted — Default session active</span>'), 600);
+        setTimeout(() => udsLog('<span class="info">[UDS] ECU restarted â€” Default session active</span>'), 600);
       }, 100);
     }
   };
   if (actions[action]) actions[action]();
 }
 
-/* ──────────────────────────────────────────── */
-/* MODULE 5 — LIN Stack                         */
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* MODULE 5 â€” LIN Stack                         */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let linInterval = null;
 let linFrameIdx = 0;
 let linWindowPos = 0;
@@ -1105,7 +1127,7 @@ function linLog(msg) {
 
 function startLIN() {
   if (linInterval) return;
-  linLog('<span class="ok">[LIN] Scheduler started — 20kbit/s, enhanced checksum</span>');
+  linLog('<span class="ok">[LIN] Scheduler started â€” 20kbit/s, enhanced checksum</span>');
   document.getElementById('lin-master-state').textContent = 'ACTIVE';
   linInterval = setInterval(linTick, 200);
 }
@@ -1116,12 +1138,12 @@ function stopLIN() {
   document.getElementById('lin-bus-anim').style.width = '0%';
   document.getElementById('lin-frame-overlay').textContent = '';
   linLog('[LIN] Scheduler stopped');
-  linFrames.forEach(f => { document.getElementById(f.rowId).textContent = '—'; });
+  linFrames.forEach(f => { document.getElementById(f.rowId).textContent = 'â€”'; });
 }
 
 function injectLINError() {
-  linLog('<span class="err">[LIN] ⚠ Checksum error injected on WindowPos frame!</span>');
-  linLog('<span class="err">[LIN] No-response timeout detected — SlaveError reported</span>');
+  linLog('<span class="err">[LIN] âš  Checksum error injected on WindowPos frame!</span>');
+  linLog('<span class="err">[LIN] No-response timeout detected â€” SlaveError reported</span>');
   document.getElementById('lin-row-0').innerHTML = '<span class="text-red-400">ERR</span>';
 }
 
@@ -1143,11 +1165,11 @@ function linTick() {
       let resp = '';
       if (fi === 0) { data = [linWindowPos & 0xFF, 0x00]; resp = `${linWindowPos}%`; }
       else if (fi === 1) { data = [linFanSpeed & 0xFF, 0x00]; resp = `${linFanSpeed}%`; }
-      else { const temp = 40 + Math.floor(Math.random() * 20); data = [temp, 0x00]; resp = `${temp}°C`; }
+      else { const temp = 40 + Math.floor(Math.random() * 20); data = [temp, 0x00]; resp = `${temp}Â°C`; }
       const dataHex = data.map(b => b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
       const chk = (data.reduce((s,b)=>s+b,0) & 0xFF).toString(16).padStart(2,'0').toUpperCase();
       document.getElementById(f.rowId).innerHTML = `<span class="text-green-400">OK</span>`;
-      linLog(`<span class="ok">[LIN] ${f.name} PID:${f.pid} DATA:[${dataHex}] CHK:${chk} → ${resp}</span>`);
+      linLog(`<span class="ok">[LIN] ${f.name} PID:${f.pid} DATA:[${dataHex}] CHK:${chk} â†’ ${resp}</span>`);
       setTimeout(() => {
         document.getElementById('lin-bus-anim').style.width = '0%';
         document.getElementById('lin-frame-overlay').textContent = '';
@@ -1156,9 +1178,9 @@ function linTick() {
   });
 }
 
-/* ──────────────────────────────────────────── */
-/* MODULE 6 — SOME/IP Adaptive                  */
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* MODULE 6 â€” SOME/IP Adaptive                  */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 let serviceOffered = false;
 let clientFound = false;
 let eventSubscribed = false;
@@ -1185,18 +1207,18 @@ function animatePacket(direction, label) {
     pkDn.style.height = '100%'; pkDn.style.top = '0';
     setTimeout(() => { pkDn.style.height = '0%'; }, 300);
   }
-  setTimeout(() => { document.getElementById('net-label').textContent = '—'; }, 400);
+  setTimeout(() => { document.getElementById('net-label').textContent = 'â€”'; }, 400);
 }
 
 function offerService() {
   serviceOffered = true;
-  document.getElementById('server-offer-status').textContent = 'Offered ✅';
+  document.getElementById('server-offer-status').textContent = 'Offered âœ…';
   document.getElementById('server-offer-status').className = 'font-mono text-green-400';
   document.getElementById('server-status-dot').className = 'w-2 h-2 rounded-full bg-green-400 pulse';
-  someipLog('[SD] → Multicast: SOME/IP-SD OfferService — ServiceID:1001 InstanceID:1 ver:1.0');
-  someipLog('[AP] SpeedService.OfferService() called — listening on :30000');
+  someipLog('[SD] â†’ Multicast: SOME/IP-SD OfferService â€” ServiceID:1001 InstanceID:1 ver:1.0');
+  someipLog('[AP] SpeedService.OfferService() called â€” listening on :30000');
   animatePacket('down', 'SD Offer');
-  setTimeout(() => someipLog('<span class="ok">[SD] ✅ Service offer acknowledged on network</span>'), 300);
+  setTimeout(() => someipLog('<span class="ok">[SD] âœ… Service offer acknowledged on network</span>'), 300);
 }
 
 function stopOffer() {
@@ -1210,22 +1232,22 @@ function stopOffer() {
   document.getElementById('client-status-dot').className = 'w-2 h-2 rounded-full bg-[var(--muted-foreground)]';
   subscribers = 0;
   document.getElementById('server-subscribers').textContent = '0';
-  someipLog('[AP] StopOfferService() called — service withdrawn from network');
+  someipLog('[AP] StopOfferService() called â€” service withdrawn from network');
   animatePacket('down', 'SD Stop');
 }
 
 function findService() {
   if (!serviceOffered) { someipLog('<span class="err">[SD] Find sent but no server offering this service</span>'); animatePacket('up', 'SD Find'); return; }
-  someipLog('[SD] → Multicast: SOME/IP-SD FindService — ServiceID:1001');
+  someipLog('[SD] â†’ Multicast: SOME/IP-SD FindService â€” ServiceID:1001');
   animatePacket('up', 'SD Find');
   setTimeout(() => {
-    someipLog('<span class="ok">[SD] ← Unicast: SOME/IP-SD OfferService received from 192.168.1.10:30000</span>');
+    someipLog('<span class="ok">[SD] â† Unicast: SOME/IP-SD OfferService received from 192.168.1.10:30000</span>');
     clientFound = true;
-    document.getElementById('client-found').textContent = 'Yes ✅';
+    document.getElementById('client-found').textContent = 'Yes âœ…';
     document.getElementById('client-found').className = 'font-mono text-green-400';
     document.getElementById('client-status-dot').className = 'w-2 h-2 rounded-full bg-[var(--primary)]';
     animatePacket('down', 'SD Response');
-    setTimeout(() => someipLog('[AP] SpeedServiceProxy connected to 192.168.1.10 — proxy ready'), 300);
+    setTimeout(() => someipLog('[AP] SpeedServiceProxy connected to 192.168.1.10 â€” proxy ready'), 300);
   }, 400);
 }
 
@@ -1233,10 +1255,10 @@ function subscribeEvent() {
   if (!clientFound) { someipLog('<span class="err">[AP] FindService() first!</span>'); return; }
   eventSubscribed = true; subscribers++;
   document.getElementById('server-subscribers').textContent = subscribers;
-  someipLog('[SD] → SubscribeEventGroup: SpeedChanged (EventID:1) — queueSize=5');
+  someipLog('[SD] â†’ SubscribeEventGroup: SpeedChanged (EventID:1) â€” queueSize=5');
   animatePacket('up', 'Subscribe');
   setTimeout(() => {
-    someipLog('<span class="ok">[SD] ← SubscribeAck received — subscription active</span>');
+    someipLog('<span class="ok">[SD] â† SubscribeAck received â€” subscription active</span>');
     animatePacket('down', 'SubAck');
     clearInterval(someipEventInterval);
     someipEventInterval = setInterval(() => {
@@ -1257,22 +1279,23 @@ function subscribeEvent() {
 function callMethod() {
   if (!clientFound) { someipLog('<span class="err">[AP] FindService() first!</span>'); return; }
   const reqId = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4,'0');
-  someipLog(`[SOME/IP] → REQUEST: ServiceID=1001 MethodID=0001 SessionID=0x${reqId}`);
+  someipLog(`[SOME/IP] â†’ REQUEST: ServiceID=1001 MethodID=0001 SessionID=0x${reqId}`);
   animatePacket('up', 'Request');
   setTimeout(() => {
     const speed = someipSpeed;
-    someipLog(`<span class="ok">[SOME/IP] ← RESPONSE: GetCurrentSpeed() = ${speed.toFixed(1)} km/h  [SessionID=0x${reqId}]</span>`);
+    someipLog(`<span class="ok">[SOME/IP] â† RESPONSE: GetCurrentSpeed() = ${speed.toFixed(1)} km/h  [SessionID=0x${reqId}]</span>`);
     document.getElementById('client-last-speed').textContent = speed.toFixed(1) + ' km/h';
     animatePacket('down', 'Response');
   }, 180);
 }
 
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /* INITIALIZATION                               */
-/* ──────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 renderTaskList();
 renderGantt();
 renderNvmBlocks();
 </script>
 </body>
 </html>
+
