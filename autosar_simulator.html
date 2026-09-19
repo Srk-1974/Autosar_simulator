@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUTOSAR Training Simulator</title>
+<script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+<style>
+  /* ── scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── tab underline animation ── */
+  .tab-btn { transition: border-color 0.2s, color 0.2s; }
+  .tab-btn.active { border-bottom: 2px solid var(--primary); color: var(--primary); }
+
+  /* ── module card hover ── */
+  .mod-card { transition: transform 0.15s, box-shadow 0.15s; cursor: pointer; }
+  .mod-card:hover { transform: translateY(-2px); }
+
+  /* ── gantt task bar ── */
+  .gantt-bar { transition: width 0.4s ease; border-radius: 4px; }
+
+  /* ── terminal ── */
+  .terminal { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.5; }
+  .terminal .ok  { color: #4ade80; }
+  .terminal .err { color: #f87171; }
+  .terminal .cmd { color: #60a5fa; }
+  .terminal .info { color: #facc15; }
+
+  /* ── LIN bus wire ── */
+  .lin-wire { background: linear-gradient(90deg, #4ade80 0%, #4ade80 var(--fill, 0%), var(--border) var(--fill, 0%)); transition: --fill 0.3s; }
+
+  /* ── pulse animation ── */
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .pulse { animation: pulse-dot 1.2s infinite; }
+
+  /* ── slideIn ── */
+  @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .slide-in { animation: slideIn 0.3s ease; }
+
+  /* ── port connector ── */
+  .port-p { background: #4ade80; color: #000; }
+  .port-r { background: #60a5fa; color: #000; }
+  .port-connected { box-shadow: 0 0 0 2px #4ade80; }
+
+  .nvm-block { transition: background 0.5s, border-color 0.5s; }
+
+  .swipe-indicator { color: var(--muted-foreground); font-size: 11px; }
+</style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased">
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  HEADER                                                        -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="bg-[var(--sidebar)] border-b border-[var(--border)] px-5 py-3 flex items-center gap-3">
+  <div class="text-2xl">🚗</div>
+  <div>
+    <h1 class="font-bold text-base text-[var(--foreground)]">AUTOSAR Training Simulator</h1>
+    <p class="text-xs text-[var(--muted-foreground)]">Interactive Labs · 6 Modules · Classic + Adaptive Platform</p>
+  </div>
+  <div class="ml-auto flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
+    <span id="progress-label">Module 1 of 6</span>
+    <div class="w-32 h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
+      <div id="progress-bar" class="h-full bg-[var(--primary)] rounded-full transition-all" style="width:16.7%"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  MODULE TABS                                                   -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="bg-[var(--card)] border-b border-[var(--border)] px-4 overflow-x-auto">
+  <div class="flex gap-1 min-w-max">
+    <button onclick="showModule(0)" id="tab-0" class="tab-btn active px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
+      🗂 M1: ARXML & SWC
+    </button>
+    <button onclick="showModule(1)" id="tab-1" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
+      ⏱ M2: OS Scheduler
+    </button>
+    <button onclick="showModule(2)" id="tab-2" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
+      💾 M3: NvM Lifecycle
+    </button>
+    <button onclick="showModule(3)" id="tab-3" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
+      🔧 M4: UDS Diagnostics
+    </button>
+    <button onclick="showModule(4)" id="tab-4" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
+      📡 M5: LIN Stack
+    </button>
+    <button onclick="showModule(5)" id="tab-5" class="tab-btn px-3 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 border-transparent">
+      🌐 M6: SOME/IP Adaptive
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  MODULE PANELS                                                 -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="modules-container" class="p-4 overflow-y-auto" style="max-height: calc(100vh - 110px)">
+
+  <!-- ───────────────────────────────────────── -->
+  <!-- MODULE 0: ARXML SWC Configurator         -->
+  <!-- ───────────────────────────────────────── -->
+  <div id="module-0" class="module-panel slide-in">
+    <div class="mb-3">
+      <h2 class="text-sm font-bold">Module 1 — ARXML & SWC Port Configuration</h2>
+      <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Drag ports, connect SWCs, generate ARXML and inspect the RTE interface.</p>
+    </div>
+
+    <!-- SWC Canvas -->
+    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
+
+      <!-- SWC A -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+        <div class="text-xs font-bold text-center mb-2 text-[var(--primary)]">SpeedSensor_SWC</div>
+        <div class="text-xs text-[var(--muted-foreground)] text-center mb-2">Application SWC</div>
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-[var(--muted-foreground)]">AdcInputPort</span>
+            <span class="port-r text-xs px-1.5 py-0.5 rounded font-mono font-bold" id="portA-in">R</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-[var(--muted-foreground)]">SpeedOutputPort</span>
+            <span class="port-p text-xs px-1.5 py-0.5 rounded font-mono font-bold" id="portA-out">P</span>
+          </div>
+          <div class="mt-2 text-xs bg-[var(--sidebar)] rounded p-1.5 font-mono text-[var(--muted-foreground)]">
+            Runnable: SpeedSensor_10ms<br>
+            Period: 10ms
+          </div>
+        </div>
+      </div>
+
+      <!-- Connection Panel -->
+      <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3 flex flex-col items-center justify-center">
+        <div class="text-xs text-[var(--muted-foreground)] mb-2 text-center">Port Connections</div>
+        <div id="connections-list" class="w-full space-y-1.5 text-xs">
+          <!-- filled by JS -->
+        </div>
+        <button onclick="connectPorts()" class="mt-3 bg-[var(--primary)] text-[var(--primary-foreground)] text-xs px-3 py-1.5 rounded font-medium hover:opacity-90 transition">
+          ⚡ Connect Ports
+        </button>
+        <button onclick="validateARXML()" class="mt-1.5 border border-[var(--border)] text-xs px-3 py-1.5 rounded font-medium hover:bg-[var(--card)] transition">
+          ✅ Validate ARXML
+        </button>
+        <div id="arxml-status" class="mt-2 text-xs text-center"></div>
+      </div>
+
+      <!-- SWC B -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+        <div class="text-xs font-bold text-center mb-2 text-[var(--primary)]">SpeedControl_SWC</div>
+        <div class="text-xs text-[var(--muted-foreground)] text-center mb-2">Application SWC</div>
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="port-r text-xs px-1.5 py-0.5 rounded font-mono font-bold" id="portB-in">R</span>
+            <span class="text-xs text-[var(--muted-foreground)]">SpeedInputPort</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="port-p text-xs px-1.5 py-0.5 rounded font-mono font-bold" id="portB-out">P</span>
+            <span class="text-xs text-[var(--muted-foreground)]">ThrottleOutputPort</span>
+          </div>
+          <div class="mt-2 text-xs bg-[var(--sidebar)] rounded p-1.5 font-mono text-[var(--muted-foreground)]">
+            Runnable: SpeedCtrl_10ms<br>
+            Period: 10ms
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generated RTE Header -->
+    <div class="mt-3 bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-bold">Generated RTE Interface (Rte_SpeedSensor.h)</span>
+        <span id="rte-badge" class="text-xs px-2 py-0.5 rounded bg-[var(--border)] text-[var(--muted-foreground)]">Not generated</span>
+      </div>
+      <pre id="rte-output" class="text-xs font-mono text-[var(--muted-foreground)] whitespace-pre-wrap leading-relaxed">/* Connect ports and validate ARXML to generate RTE header */</pre>
+    </div>
+
+    <!-- Lab Checklist -->
+    <div class="mt-3 bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+      <div class="text-xs font-bold mb-2">📋 Lab 1A Checklist</div>
+      <div class="space-y-1" id="lab1-checklist">
+        <label class="flex items-center gap-2 text-xs cursor-pointer">
+          <input type="checkbox" id="chk1-1" onchange="updateLab1Progress()" class="rounded"> Define SR_VehicleSpeed port interface
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer">
+          <input type="checkbox" id="chk1-2" onchange="updateLab1Progress()" class="rounded"> Connect SpeedSensor P-PORT → SpeedControl R-PORT
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer">
+          <input type="checkbox" id="chk1-3" onchange="updateLab1Progress()" class="rounded"> Validate ARXML — 0 schema errors
+        </label>
+        <label class="flex items-center gap-2 text-xs cursor-pointer">
+          <input type="checkbox" id="chk1-4" onchange="updateLab1Progress()" class="rounded"> Inspect generated Rte_Read_SpeedOutputPort() call
+        </label>
+      </div>
+      <div class="mt-2 h-1.5 bg-[var(--border)] rounded-full overflow-hidden">
+        <div id="lab1-progress" class="h-full bg-[var(--primary)] rounded-full transition-all" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────── -->
+  <!-- MODULE 1: OS Task Scheduler              -->
+  <!-- ───────────────────────────────────────── -->
+  <div id="module-1" class="module-panel hidden slide-in">
+    <div class="mb-3">
+      <h2 class="text-sm font-bold">Module 2 — OS Task Scheduler Visualizer</h2>
+      <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Configure tasks, set priorities, and observe the AUTOSAR OS scheduling behavior in real-time.</p>
+    </div>
+
+    <!-- Task Config -->
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+        <div class="text-xs font-bold mb-2">Task Configuration</div>
+        <div class="space-y-2 text-xs">
+          <div id="task-list">
+            <!-- Tasks rendered by JS -->
+          </div>
+          <button onclick="addTask()" class="w-full border border-dashed border-[var(--border)] py-1 rounded text-[var(--muted-foreground)] hover:bg-[var(--sidebar)] transition text-xs">
+            + Add Task
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+        <div class="text-xs font-bold mb-2">System Status</div>
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between">
+            <span class="text-[var(--muted-foreground)]">System Tick</span>
+            <span id="sys-tick" class="font-mono text-[var(--primary)]">0 ms</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[var(--muted-foreground)]">CPU Load</span>
+            <span id="cpu-load" class="font-mono">0%</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[var(--muted-foreground)]">Deadline Misses</span>
+            <span id="deadline-miss" class="font-mono text-[var(--muted-foreground)]">0</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[var(--muted-foreground)]">Active Task</span>
+            <span id="active-task" class="font-mono text-[var(--primary)]">—</span>
+          </div>
+        </div>
+        <div class="mt-3 flex gap-2">
+          <button onclick="startScheduler()" id="btn-start" class="flex-1 bg-[var(--primary)] text-[var(--primary-foreground)] text-xs py-1.5 rounded font-medium hover:opacity-90 transition">
+            ▶ Start
+          </button>
+          <button onclick="stopScheduler()" class="flex-1 border border-[var(--border)] text-xs py-1.5 rounded font-medium hover:bg-[var(--sidebar)] transition">
+            ⏹ Stop
+          </button>
+          <button onclick="injectOverload()" class="flex-1 border border-red-500/30 text-red-400 text-xs py-1.5 rounded font-medium hover:bg-red-500/10 transition">
+            ⚠ Overload
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gantt Chart -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+      <div class="text-xs font-bold mb-2">Task Execution Gantt Chart</div>
+      <div class="overflow-x-auto">
+        <div id="gantt-chart" class="min-w-full" style="min-height: 140px;">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- OS Log -->
+    <div class="mt-3 bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
+      <div class="text-xs font-bold mb-1">OS Event Log</div>
+      <div id="os-log" class="terminal h-24 overflow-y-auto text-[var(--muted-foreground)]">
+        <div class="info">[OS] AUTOSAR OS initialized — OSDEFAULTAPPMODE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────── -->
+  <!-- MODULE 2: NvM Lifecycle                  -->
+  <!-- ───────────────────────────────────────── -->
+  <div id="module-2" class="module-panel hidden slide-in">
+    <div class="mb-3">
+      <h2 class="text-sm font-bold">Module 3 — NvM Block Lifecycle Simulator</h2>
+      <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Simulate ECU startup ReadAll, block writes, power-cut recovery and default value restoration.</p>
+    </div>
+
+    <!-- NvM Blocks -->
+    <div class="grid grid-cols-3 gap-2 mb-3" id="nvm-blocks-display">
+      <!-- rendered by JS -->
+    </div>
+
+    <!-- NvM Controls -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3 mb-3">
+      <div class="text-xs font-bold mb-2">NvM Operations</div>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="nvmReadAll()" class="bg-[var(--primary)] text-[var(--primary-foreground)] text-xs px-3 py-1.5 rounded font-medium hover:opacity-90">
+          📖 NvM_ReadAll (Startup)
+        </button>
+        <button onclick="nvmWriteBlock(0)" class="border border-[var(--border)] text-xs px-3 py-1.5 rounded hover:bg-[var(--sidebar)]">
+          ✏️ Write Block 1
+        </button>
+        <button onclick="nvmWriteBlock(1)" class="border border-[var(--border)] text-xs px-3 py-1.5 rounded hover:bg-[var(--sidebar)]">
+          ✏️ Write Block 2
+        </button>
+        <button onclick="nvmInvalidate(2)" class="border border-[var(--border)] text-xs px-3 py-1.5 rounded hover:bg-[var(--sidebar)]">
+          🗑 Invalidate Block 3
+        </button>
+        <button onclick="nvmPowerCut()" class="border border-red-500/30 text-red-400 text-xs px-3 py-1.5 rounded hover:bg-red-500/10">
+          ⚡ Simulate Power Cut
+        </button>
+        <button onclick="nvmWriteAll()" class="border border-[var(--border)] text-xs px-3 py-1.5 rounded hover:bg-[var(--sidebar)]">
+          💾 NvM_WriteAll (Shutdown)
+        </button>
+      </div>
+    </div>
+
+    <!-- NvM Log -->
+    <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
+      <div class="text-xs font-bold mb-1">NvM Operation Log</div>
+      <div id="nvm-log" class="terminal h-36 overflow-y-auto">
+        <div class="info">[NvM] Module initialized — 3 blocks configured</div>
+        <div class="info">[NvM] Block 1: TargetSpeed (REDUNDANT, 4 bytes)</div>
+        <div class="info">[NvM] Block 2: Odometer (NATIVE, 4 bytes)</div>
+        <div class="info">[NvM] Block 3: DEM data (NATIVE, 64 bytes)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────── -->
+  <!-- MODULE 3: UDS Diagnostics Console        -->
+  <!-- ───────────────────────────────────────── -->
+  <div id="module-3" class="module-panel hidden slide-in">
+    <div class="mb-3">
+      <h2 class="text-sm font-bold">Module 4 — UDS Diagnostic Console</h2>
+      <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Send UDS requests in hex and observe ECU responses. Walk through session management, security access, DID read/write, and routine control.</p>
+    </div>
+
+    <!-- ECU State Panel -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center">
+        <div class="text-xs text-[var(--muted-foreground)]">Session</div>
+        <div id="uds-session" class="text-xs font-bold mt-0.5 text-[var(--primary)]">DEFAULT (01)</div>
+      </div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center">
+        <div class="text-xs text-[var(--muted-foreground)]">Security</div>
+        <div id="uds-security" class="text-xs font-bold mt-0.5 text-red-400">LOCKED 🔒</div>
+      </div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center">
+        <div class="text-xs text-[var(--muted-foreground)]">Speed DID</div>
+        <div id="uds-speed-did" class="text-xs font-bold mt-0.5">— km/h</div>
+      </div>
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-center">
+        <div class="text-xs text-[var(--muted-foreground)]">Active DTC</div>
+        <div id="uds-dtc-count" class="text-xs font-bold mt-0.5">0</div>
+      </div>
+    </div>
+
+    <!-- Quick Action Buttons -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3 mb-3">
+      <div class="text-xs font-bold mb-2">Quick UDS Actions</div>
+      <div class="flex flex-wrap gap-1.5">
+        <button onclick="udsAction('startExtSession')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x10 03 — Extended Session</button>
+        <button onclick="udsAction('startProgSession')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x10 02 — Programming Session</button>
+        <button onclick="udsAction('requestSeed')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x27 01 — Request Seed</button>
+        <button onclick="udsAction('sendKey')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x27 02 — Send Key</button>
+        <button onclick="udsAction('readSpeed')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x22 10 01 — Read Speed</button>
+        <button onclick="udsAction('writeSpeed')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x2E 20 01 — Write Speed</button>
+        <button onclick="udsAction('startRoutine')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x31 01 — Start Routine</button>
+        <button onclick="udsAction('readDtc')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x19 02 — Read DTCs</button>
+        <button onclick="udsAction('clearDtc')" class="text-xs px-2 py-1 bg-[var(--sidebar)] rounded border border-[var(--border)] hover:border-[var(--primary)] transition">0x14 — Clear DTCs</button>
+        <button onclick="udsAction('ecuReset')" class="text-xs px-2 py-1 border border-red-500/30 text-red-400 rounded hover:bg-red-500/10 transition">0x11 01 — ECU Reset</button>
+      </div>
+    </div>
+
+    <!-- UDS Console -->
+    <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
+      <div class="text-xs font-bold mb-1">UDS Communication Log (ISO 14229)</div>
+      <div id="uds-log" class="terminal h-44 overflow-y-auto">
+        <div class="info">[UDS] ECU online — Tester connected on CAN 0x7DF/0x7E8</div>
+        <div class="info">[UDS] Default Diagnostic Session active</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────── -->
+  <!-- MODULE 4: LIN Stack                      -->
+  <!-- ───────────────────────────────────────── -->
+  <div id="module-4" class="module-panel hidden slide-in">
+    <div class="mb-3">
+      <h2 class="text-sm font-bold">Module 5 — LIN Bus Frame Analyzer</h2>
+      <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Simulate LIN master/slave communication, observe frame scheduling, and inject bus errors.</p>
+    </div>
+
+    <!-- LIN Bus Visual -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3 mb-3">
+      <div class="text-xs font-bold mb-3">LIN Bus Network</div>
+      <div class="flex items-center gap-3">
+        <!-- Master node -->
+        <div class="bg-[var(--primary)]/10 border border-[var(--primary)]/30 rounded-lg p-2.5 min-w-max">
+          <div class="text-xs font-bold text-[var(--primary)]">MASTER</div>
+          <div class="text-xs text-[var(--muted-foreground)]">BCM ECU</div>
+          <div id="lin-master-state" class="text-xs mt-1 font-mono">IDLE</div>
+        </div>
+
+        <!-- Bus wire -->
+        <div class="flex-1 relative">
+          <div class="h-3 bg-[var(--border)] rounded-full relative overflow-hidden">
+            <div id="lin-bus-anim" class="h-full bg-[var(--primary)] rounded-full transition-all duration-300" style="width:0%"></div>
+          </div>
+          <div class="text-center text-xs text-[var(--muted-foreground)] mt-1">LIN Bus (Single Wire, 20 kbit/s)</div>
+          <div id="lin-frame-overlay" class="text-center text-xs font-mono text-[var(--primary)] mt-0.5 h-4"></div>
+        </div>
+
+        <!-- Slaves -->
+        <div class="flex flex-col gap-1.5">
+          <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded p-2 text-center min-w-max">
+            <div class="text-xs font-bold">SLAVE 1</div>
+            <div class="text-xs text-[var(--muted-foreground)]">Window Motor</div>
+            <div id="slave1-val" class="text-xs font-mono text-[var(--primary)]">Pos: 0%</div>
+          </div>
+          <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded p-2 text-center min-w-max">
+            <div class="text-xs font-bold">SLAVE 2</div>
+            <div class="text-xs text-[var(--muted-foreground)]">HVAC Fan</div>
+            <div id="slave2-val" class="text-xs font-mono text-[var(--primary)]">Fan: 0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Table & Controls -->
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      <!-- Schedule Table -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+        <div class="text-xs font-bold mb-2">Schedule Table</div>
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="text-[var(--muted-foreground)]">
+              <th class="text-left pb-1">Frame</th>
+              <th class="text-left pb-1">PID</th>
+              <th class="text-left pb-1">Period</th>
+              <th class="text-left pb-1">Status</th>
+            </tr>
+          </thead>
+          <tbody id="lin-schedule-table">
+            <tr>
+              <td class="py-0.5">WindowPos</td><td class="font-mono">0x01</td><td>20ms</td>
+              <td id="lin-row-0" class="text-[var(--muted-foreground)]">—</td>
+            </tr>
+            <tr>
+              <td class="py-0.5">FanSpeed</td><td class="font-mono">0x02</td><td>20ms</td>
+              <td id="lin-row-1" class="text-[var(--muted-foreground)]">—</td>
+            </tr>
+            <tr>
+              <td class="py-0.5">MotorTemp</td><td class="font-mono">0x03</td><td>100ms</td>
+              <td id="lin-row-2" class="text-[var(--muted-foreground)]">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Controls -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+        <div class="text-xs font-bold mb-2">Simulation Controls</div>
+        <div class="flex flex-col gap-2">
+          <button onclick="startLIN()" id="lin-start-btn" class="bg-[var(--primary)] text-[var(--primary-foreground)] text-xs py-1.5 rounded font-medium hover:opacity-90">
+            ▶ Start LIN Scheduler
+          </button>
+          <button onclick="stopLIN()" class="border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--sidebar)]">
+            ⏹ Stop
+          </button>
+          <button onclick="injectLINError()" class="border border-red-500/30 text-red-400 text-xs py-1.5 rounded hover:bg-red-500/10">
+            💥 Inject Checksum Error
+          </button>
+          <div class="flex items-center justify-between text-xs mt-1">
+            <span class="text-[var(--muted-foreground)]">Window Position:</span>
+            <input type="range" id="lin-window-slider" min="0" max="100" value="0"
+              onchange="setWindowPos(this.value)"
+              class="w-20 h-1 accent-[var(--primary)]">
+          </div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-[var(--muted-foreground)]">Fan Speed:</span>
+            <input type="range" id="lin-fan-slider" min="0" max="100" value="0"
+              onchange="setFanSpeed(this.value)"
+              class="w-20 h-1 accent-[var(--primary)]">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIN Log -->
+    <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
+      <div class="text-xs font-bold mb-1">LIN Frame Log</div>
+      <div id="lin-log" class="terminal h-32 overflow-y-auto">
+        <div class="info">[LIN] Master initialized — Schedule table loaded (3 frames)</div>
+        <div class="info">[LIN] Slave 1 (Window Motor) online</div>
+        <div class="info">[LIN] Slave 2 (HVAC Fan) online</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────────────── -->
+  <!-- MODULE 5: SOME/IP Adaptive               -->
+  <!-- ───────────────────────────────────────── -->
+  <div id="module-5" class="module-panel hidden slide-in">
+    <div class="mb-3">
+      <h2 class="text-sm font-bold">Module 6 — AUTOSAR Adaptive: ara::com & SOME/IP</h2>
+      <p class="text-xs text-[var(--muted-foreground)] mt-0.5">Simulate SOME/IP service discovery, method calls, and event subscriptions between Adaptive ECUs.</p>
+    </div>
+
+    <!-- Network View -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3 mb-3">
+      <div class="text-xs font-bold mb-3">Ethernet Service-Oriented Network</div>
+      <div class="flex items-stretch gap-3">
+
+        <!-- Server ECU -->
+        <div class="flex-1 bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <div id="server-status-dot" class="w-2 h-2 rounded-full bg-[var(--muted-foreground)] pulse"></div>
+            <span class="text-xs font-bold">SERVER ECU</span>
+            <span class="text-xs text-[var(--muted-foreground)]">IP: 192.168.1.10</span>
+          </div>
+          <div class="text-xs space-y-1">
+            <div class="flex justify-between">
+              <span class="text-[var(--muted-foreground)]">Service</span>
+              <span class="font-mono">SpeedService (ID:1001)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[var(--muted-foreground)]">Status</span>
+              <span id="server-offer-status" class="font-mono text-[var(--muted-foreground)]">Not offered</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[var(--muted-foreground)]">Subscribers</span>
+              <span id="server-subscribers" class="font-mono">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[var(--muted-foreground)]">Events sent</span>
+              <span id="server-events-sent" class="font-mono">0</span>
+            </div>
+          </div>
+          <button onclick="offerService()" class="mt-2 w-full bg-[var(--primary)] text-[var(--primary-foreground)] text-xs py-1.5 rounded font-medium hover:opacity-90">
+            📡 OfferService()
+          </button>
+          <button onclick="stopOffer()" class="mt-1 w-full border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--card)]">
+            StopOfferService()
+          </button>
+        </div>
+
+        <!-- Network -->
+        <div class="flex flex-col items-center justify-center min-w-max gap-2">
+          <div class="text-xs text-[var(--muted-foreground)]">Ethernet</div>
+          <div id="net-anim" class="flex flex-col gap-1.5 items-center">
+            <div class="w-1 h-8 bg-[var(--border)] rounded-full relative overflow-hidden">
+              <div id="pkt-up" class="absolute w-full rounded-full transition-all duration-500" style="height:0%;bottom:0;background:var(--primary)"></div>
+            </div>
+            <div class="text-xs text-[var(--muted-foreground)] font-mono" id="net-label">—</div>
+            <div class="w-1 h-8 bg-[var(--border)] rounded-full relative overflow-hidden">
+              <div id="pkt-down" class="absolute w-full rounded-full transition-all duration-500" style="height:0%;top:0;background:#4ade80"></div>
+            </div>
+          </div>
+          <div class="text-xs text-[var(--muted-foreground)]">SOME/IP</div>
+        </div>
+
+        <!-- Client ECU -->
+        <div class="flex-1 bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <div id="client-status-dot" class="w-2 h-2 rounded-full bg-[var(--muted-foreground)]"></div>
+            <span class="text-xs font-bold">CLIENT ECU</span>
+            <span class="text-xs text-[var(--muted-foreground)]">IP: 192.168.1.20</span>
+          </div>
+          <div class="text-xs space-y-1">
+            <div class="flex justify-between">
+              <span class="text-[var(--muted-foreground)]">Proxy</span>
+              <span class="font-mono">SpeedServiceProxy</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[var(--muted-foreground)]">Found</span>
+              <span id="client-found" class="font-mono text-[var(--muted-foreground)]">No</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[var(--muted-foreground)]">Last Speed</span>
+              <span id="client-last-speed" class="font-mono">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[var(--muted-foreground)]">Events rcvd</span>
+              <span id="client-events-rcvd" class="font-mono">0</span>
+            </div>
+          </div>
+          <button onclick="findService()" class="mt-2 w-full border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--card)]">
+            🔍 FindService()
+          </button>
+          <button onclick="subscribeEvent()" class="mt-1 w-full border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--card)]">
+            📥 Subscribe SpeedChanged
+          </button>
+          <button onclick="callMethod()" class="mt-1 w-full border border-[var(--border)] text-xs py-1.5 rounded hover:bg-[var(--card)]">
+            ⚡ GetCurrentSpeed()
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOME/IP Message Log -->
+    <div class="bg-[var(--sidebar)] border border-[var(--border)] rounded-lg p-3">
+      <div class="text-xs font-bold mb-1">SOME/IP Message Trace</div>
+      <div id="someip-log" class="terminal h-44 overflow-y-auto">
+        <div class="info">[AP] AUTOSAR Adaptive Runtime initialized</div>
+        <div class="info">[AP] ara::com middleware started on 192.168.1.x</div>
+        <div class="info">[SD] Service Discovery multicast group joined</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end modules-container -->
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!--  JAVASCRIPT                                                    -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<script>
+/* ──────────────────────────────────────────── */
+/* Global State                                 */
+/* ──────────────────────────────────────────── */
+let currentModule = 0;
+
+/* ── Module switching ── */
+function showModule(idx) {
+  document.querySelectorAll('.module-panel').forEach(p => p.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById(`module-${idx}`);
+  panel.classList.remove('hidden');
+  panel.classList.remove('slide-in');
+  void panel.offsetWidth;
+  panel.classList.add('slide-in');
+  document.getElementById(`tab-${idx}`).classList.add('active');
+  currentModule = idx;
+  const pct = ((idx + 1) / 6 * 100).toFixed(1);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `Module ${idx+1} of 6`;
+}
+
+/* ──────────────────────────────────────────── */
+/* MODULE 1 — ARXML & SWC                       */
+/* ──────────────────────────────────────────── */
+let portsConnected = false;
+
+function connectPorts() {
+  portsConnected = true;
+  document.getElementById('portA-out').classList.add('port-connected');
+  document.getElementById('portB-in').classList.add('port-connected');
+  const list = document.getElementById('connections-list');
+  list.innerHTML = `
+    <div class="flex items-center gap-1 bg-[var(--sidebar)] rounded p-1.5">
+      <span class="port-p text-xs px-1 rounded font-mono font-bold">P</span>
+      <span class="text-[var(--muted-foreground)]">SpeedOutputPort</span>
+      <span class="text-[var(--primary)]">→</span>
+      <span class="port-r text-xs px-1 rounded font-mono font-bold">R</span>
+      <span class="text-[var(--muted-foreground)]">SpeedInputPort</span>
+    </div>
+    <div class="flex items-center gap-1 bg-[var(--sidebar)] rounded p-1.5 mt-1">
+      <span class="port-p text-xs px-1 rounded font-mono font-bold">P</span>
+      <span class="text-[var(--muted-foreground)]">ThrottleOutputPort</span>
+      <span class="text-green-400">✓ open</span>
+    </div>`;
+  document.getElementById('chk1-2').checked = true;
+  updateLab1Progress();
+}
+
+function validateARXML() {
+  if (!portsConnected) {
+    document.getElementById('arxml-status').innerHTML = '<span class="text-red-400">❌ Connect ports first</span>';
+    return;
+  }
+  document.getElementById('arxml-status').innerHTML = '<span class="text-[var(--primary)] pulse">⏳ Validating…</span>';
+  setTimeout(() => {
+    document.getElementById('arxml-status').innerHTML = '<span class="text-green-400">✅ ARXML valid — 0 errors</span>';
+    document.getElementById('rte-badge').textContent = '✅ Generated';
+    document.getElementById('rte-badge').className = 'text-xs px-2 py-0.5 rounded bg-green-500/20 text-green-400';
+    document.getElementById('rte-output').textContent =
+`/* ===== AUTO-GENERATED by AUTOSAR RTE Tool ===== */
+/* DO NOT EDIT MANUALLY                           */
+
+#ifndef RTE_SPEEDSENSOR_H
+#define RTE_SPEEDSENSOR_H
+
+#include "Rte_Type.h"
+
+/* Read from AdcInputPort (SR_AdcRaw) */
+FUNC(Std_ReturnType, RTE_CODE) Rte_Read_SpeedSensor_AdcInputPort(
+    P2VAR(uint16, AUTOMATIC, RTE_SPEEDSENSOR_APPL_VAR) value);
+
+/* Write to SpeedOutputPort (SR_VehicleSpeed) */
+FUNC(Std_ReturnType, RTE_CODE) Rte_Write_SpeedSensor_SpeedOutputPort(
+    P2CONST(float32, AUTOMATIC, RTE_SPEEDSENSOR_APPL_DATA) value);
+
+#endif /* RTE_SPEEDSENSOR_H */`;
+    document.getElementById('chk1-3').checked = true;
+    document.getElementById('chk1-4').checked = true;
+    updateLab1Progress();
+  }, 900);
+}
+
+function updateLab1Progress() {
+  const checks = ['chk1-1','chk1-2','chk1-3','chk1-4'];
+  const done = checks.filter(id => document.getElementById(id).checked).length;
+  document.getElementById('lab1-progress').style.width = (done / checks.length * 100) + '%';
+}
+
+/* ──────────────────────────────────────────── */
+/* MODULE 2 — OS Scheduler                      */
+/* ──────────────────────────────────────────── */
+const osTasks = [
+  { name: 'Task_10ms',    priority: 10, period: 10,  runtime: 2,  color: '#60a5fa' },
+  { name: 'Task_20ms',    priority: 8,  period: 20,  runtime: 3,  color: '#4ade80' },
+  { name: 'Task_100ms',   priority: 5,  period: 100, runtime: 8,  color: '#facc15' },
+  { name: 'ISR_CanRx',    priority: 15, period: 0,   runtime: 0.5,color: '#f472b6' },
+];
+let osInterval = null;
+let sysTick = 0;
+let deadlineMisses = 0;
+let ganttData = [];  /* {task, start, end, miss} */
+let overloadActive = false;
+
+function renderTaskList() {
+  const el = document.getElementById('task-list');
+  el.innerHTML = osTasks.map((t,i) => `
+    <div class="flex items-center gap-2 p-1.5 rounded bg-[var(--sidebar)]">
+      <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:${t.color}"></div>
+      <span class="flex-1 font-mono text-xs">${t.name}</span>
+      <span class="text-[var(--muted-foreground)] text-xs">P${t.priority}</span>
+      <span class="text-[var(--muted-foreground)] text-xs">${t.period ? t.period+'ms' : 'IRQ'}</span>
+    </div>`).join('');
+}
+
+function renderGantt() {
+  const el = document.getElementById('gantt-chart');
+  const maxTick = Math.max(sysTick, 100);
+  el.innerHTML = osTasks.map((t, ti) => {
+    const bars = ganttData.filter(d => d.task === ti).map(d => {
+      const left = (d.start / maxTick * 100).toFixed(1);
+      const width = Math.max(((d.end - d.start) / maxTick * 100), 0.5).toFixed(1);
+      const bg = d.miss ? '#f87171' : t.color;
+      return `<div class="gantt-bar absolute h-full" style="left:${left}%;width:${width}%;background:${bg};opacity:0.85"></div>`;
+    }).join('');
+    return `
+      <div class="flex items-center gap-2 mb-1">
+        <div class="text-xs font-mono w-20 text-right flex-shrink-0" style="color:${t.color}">${t.name}</div>
+        <div class="flex-1 h-5 bg-[var(--sidebar)] rounded relative overflow-hidden">${bars}</div>
+      </div>`;
+  }).join('');
+}
+
+function startScheduler() {
+  if (osInterval) return;
+  sysTick = 0; deadlineMisses = 0; ganttData = [];
+  overloadActive = false;
+  osLog('[OS] Scheduler started — OSDEFAULTAPPMODE');
+  osInterval = setInterval(schedulerTick, 50);
+}
+
+function stopScheduler() {
+  clearInterval(osInterval); osInterval = null;
+  osLog('[OS] Scheduler stopped');
+}
+
+function injectOverload() {
+  overloadActive = true;
+  osLog('<span class="err">[OS] ⚠ Overload injected! Task_10ms runtime doubled</span>');
+}
+
+let tickCounter = 0;
+function schedulerTick() {
+  tickCounter++;
+  sysTick += 10;
+  const tick = sysTick;
+
+  /* Fire periodic tasks */
+  osTasks.forEach((t, ti) => {
+    if (t.period === 0) {
+      /* ISR: random trigger */
+      if (Math.random() < 0.15) {
+        const rt = t.runtime;
+        ganttData.push({ task: ti, start: tick, end: tick + rt });
+        if (tickCounter % 8 === 0) osLog(`<span class="cmd">[ISR] ${t.name} fired — latency 0.3ms</span>`);
+      }
+      return;
+    }
+    if (tick % t.period === 0) {
+      let rt = t.runtime * (1 + Math.random() * 0.2);
+      if (overloadActive && ti === 0) { rt *= 2.2; overloadActive = false; }
+      const miss = rt > t.period;
+      if (miss) {
+        deadlineMisses++;
+        document.getElementById('deadline-miss').textContent = deadlineMisses;
+        document.getElementById('deadline-miss').className = 'font-mono text-red-400';
+        osLog(`<span class="err">[OS] ❌ Deadline MISS: ${t.name} (runtime ${rt.toFixed(1)}ms > period ${t.period}ms)</span>`);
+      }
+      ganttData.push({ task: ti, start: tick, end: tick + rt, miss });
+      document.getElementById('active-task').textContent = t.name;
+      if (tickCounter % 5 === 0 && !miss) {
+        osLog(`<span class="ok">[OS] ✓ ${t.name} activated @ ${tick}ms</span>`);
+      }
+    }
+  });
+
+  /* CPU load estimate */
+  const recent = ganttData.filter(d => d.start >= tick - 100);
+  const busyTime = recent.reduce((s, d) => s + (d.end - d.start), 0);
+  const load = Math.min((busyTime / 100 * 100), 99).toFixed(0);
+  document.getElementById('cpu-load').textContent = load + '%';
+  document.getElementById('sys-tick').textContent = tick + ' ms';
+
+  if (ganttData.length > 200) ganttData = ganttData.slice(-200);
+  renderGantt();
+}
+
+function osLog(msg) {
+  const el = document.getElementById('os-log');
+  el.innerHTML += `<div>${msg}</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+/* ──────────────────────────────────────────── */
+/* MODULE 3 — NvM Lifecycle                     */
+/* ──────────────────────────────────────────── */
+const nvmBlocks = [
+  { id: 1, name: 'TargetSpeed', type: 'REDUNDANT', size: 4,  state: 'INVALID', value: null, dirty: false, color: '#60a5fa' },
+  { id: 2, name: 'Odometer',    type: 'NATIVE',    size: 4,  state: 'INVALID', value: null, dirty: false, color: '#4ade80' },
+  { id: 3, name: 'DEM_NvData',  type: 'NATIVE',    size: 64, state: 'INVALID', value: null, dirty: false, color: '#facc15' },
+];
+
+function renderNvmBlocks() {
+  const el = document.getElementById('nvm-blocks-display');
+  el.innerHTML = nvmBlocks.map((b,i) => {
+    const stateColor = b.state === 'OK' ? 'text-green-400' : b.state === 'DIRTY' ? 'text-yellow-400' : b.state === 'WRITING' ? 'text-blue-400' : b.state === 'READING' ? 'text-purple-400' : 'text-[var(--muted-foreground)]';
+    const bg = b.state === 'OK' ? 'border-green-500/30' : b.state === 'DIRTY' ? 'border-yellow-500/30' : 'border-[var(--border)]';
+    return `
+      <div class="nvm-block bg-[var(--card)] border ${bg} rounded-lg p-3">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold">Block ${b.id}: ${b.name}</span>
+          <span class="text-xs px-1.5 py-0.5 rounded font-mono" style="background:${b.color}20;color:${b.color}">${b.type}</span>
+        </div>
+        <div class="space-y-1 text-xs">
+          <div class="flex justify-between">
+            <span class="text-[var(--muted-foreground)]">State</span>
+            <span class="font-mono ${stateColor}">${b.state}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[var(--muted-foreground)]">Value</span>
+            <span class="font-mono">${b.value !== null ? b.value : '—'}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[var(--muted-foreground)]">Size</span>
+            <span class="font-mono">${b.size} bytes</span>
+          </div>
+          <div class="h-1 rounded-full mt-1" style="background:${b.state==='OK'?b.color+'40':'var(--border)'}">
+            <div class="h-full rounded-full transition-all" style="width:${b.state==='OK'?'100':b.state==='READING'||b.state==='WRITING'?'50':'0'}%;background:${b.color}"></div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function nvmLog(msg, type='info') {
+  const el = document.getElementById('nvm-log');
+  el.innerHTML += `<div class="${type}">${msg}</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function nvmReadAll() {
+  nvmLog('[NvM] NvM_ReadAll() called — startup sequence', 'info');
+  nvmBlocks.forEach((b, i) => {
+    b.state = 'READING';
+    renderNvmBlocks();
+    setTimeout(() => {
+      if (i === 2) {
+        b.state = 'INVALID';
+        b.value = null;
+        nvmLog(`[NvM] Block ${b.id} (${b.name}): NVM_REQ_NV_INVALIDATED → default applied`, 'err');
+      } else {
+        b.state = 'OK';
+        b.value = i === 0 ? '80.0 km/h' : '52341 km';
+        nvmLog(`<span class="ok">[NvM] Block ${b.id} (${b.name}): NVM_REQ_OK — value restored</span>`);
+      }
+      renderNvmBlocks();
+    }, 600 + i * 500);
+  });
+}
+
+function nvmWriteBlock(idx) {
+  const b = nvmBlocks[idx];
+  const newVal = idx === 0 ? '100.0 km/h' : '52342 km';
+  nvmLog(`[NvM] NvM_WriteBlock(${b.id}) queued — new value: ${newVal}`);
+  b.state = 'DIRTY'; b.dirty = true; b.value = newVal;
+  renderNvmBlocks();
+  setTimeout(() => {
+    b.state = 'WRITING';
+    renderNvmBlocks();
+    setTimeout(() => {
+      b.state = 'OK'; b.dirty = false;
+      renderNvmBlocks();
+      nvmLog(`<span class="ok">[NvM] Block ${b.id} write complete — Flash updated</span>`);
+    }, 700);
+  }, 300);
+}
+
+function nvmInvalidate(idx) {
+  const b = nvmBlocks[idx];
+  b.state = 'INVALID'; b.value = null;
+  renderNvmBlocks();
+  nvmLog(`[NvM] Block ${b.id} (${b.name}) invalidated`, 'err');
+}
+
+function nvmPowerCut() {
+  nvmLog('<span class="err">[POWER] ⚡ Sudden power loss simulated during write!</span>');
+  nvmBlocks[0].state = 'WRITING';
+  renderNvmBlocks();
+  setTimeout(() => {
+    nvmLog('<span class="err">[NvM] ⚡ Write interrupted! Checking REDUNDANT copy…</span>');
+    setTimeout(() => {
+      nvmBlocks[0].state = 'OK';
+      nvmBlocks[0].value = '80.0 km/h (recovered)';
+      renderNvmBlocks();
+      nvmLog('<span class="ok">[NvM] ✅ Redundant block intact — data recovered successfully!</span>');
+    }, 800);
+  }, 400);
+}
+
+function nvmWriteAll() {
+  const dirty = nvmBlocks.filter(b => b.dirty || b.state === 'OK');
+  nvmLog(`[NvM] NvM_WriteAll() — shutdown sequence (${dirty.length} blocks)`);
+  dirty.forEach((b, i) => {
+    setTimeout(() => {
+      b.state = 'WRITING';
+      renderNvmBlocks();
+      setTimeout(() => {
+        b.state = 'OK';
+        renderNvmBlocks();
+        nvmLog(`<span class="ok">[NvM] Block ${b.id} persisted to Flash</span>`);
+      }, 500);
+    }, i * 600);
+  });
+}
+
+/* ──────────────────────────────────────────── */
+/* MODULE 4 — UDS Diagnostics                   */
+/* ──────────────────────────────────────────── */
+let udsSession = 'DEFAULT';
+let udsSecured = false;
+let udsSeed = null;
+let udsSpeed = 73.5;
+let udsDtcs = [];
+let udsAttempts = 0;
+
+function udsLog(msg) {
+  const el = document.getElementById('uds-log');
+  el.innerHTML += `<div>${msg}</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function udsAction(action) {
+  const actions = {
+    startExtSession: () => {
+      udsSession = 'EXTENDED';
+      document.getElementById('uds-session').textContent = 'EXTENDED (03)';
+      udsLog('<span class="cmd">→ TX: 02 10 03 FF FF FF FF FF</span>');
+      setTimeout(() => {
+        udsLog('<span class="ok">← RX: 06 50 03 00 19 01 F4 FF  [PositiveResponse | P2=25ms P2*=500ms]</span>');
+      }, 120);
+    },
+    startProgSession: () => {
+      if (!udsSecured) {
+        udsLog('<span class="err">← RX: 03 7F 10 33 FF FF FF FF  [NRC: securityAccessDenied]</span>');
+        return;
+      }
+      udsSession = 'PROGRAMMING';
+      document.getElementById('uds-session').textContent = 'PROGRAMMING (02)';
+      udsLog('<span class="cmd">→ TX: 02 10 02 FF FF FF FF FF</span>');
+      setTimeout(() => udsLog('<span class="ok">← RX: 02 50 02 FF FF FF FF FF  [PositiveResponse]</span>'), 120);
+    },
+    requestSeed: () => {
+      if (udsSession === 'DEFAULT') {
+        udsLog('<span class="err">← RX: 03 7F 27 22 FF FF FF FF  [NRC: conditionsNotCorrect]</span>');
+        return;
+      }
+      udsSeed = Math.floor(Math.random() * 0xFFFFFFFF);
+      const s = udsSeed.toString(16).padStart(8,'0').toUpperCase();
+      udsLog('<span class="cmd">→ TX: 02 27 01 FF FF FF FF FF</span>');
+      setTimeout(() => {
+        udsLog(`<span class="ok">← RX: 06 67 01 ${s.match(/.{2}/g).join(' ')} FF  [Seed generated]</span>`);
+      }, 80);
+    },
+    sendKey: () => {
+      if (!udsSeed) { udsLog('<span class="err">← Request seed first (0x27 01)</span>'); return; }
+      const key = (udsSeed ^ 0xC0FFEE42) >>> 0;
+      const k = key.toString(16).padStart(8,'0').toUpperCase();
+      udsLog(`<span class="cmd">→ TX: 06 27 02 ${k.match(/.{2}/g).join(' ')} FF</span>`);
+      udsAttempts++;
+      setTimeout(() => {
+        if (udsAttempts <= 3) {
+          udsSecured = true;
+          document.getElementById('uds-security').textContent = 'UNLOCKED 🔓';
+          document.getElementById('uds-security').className = 'text-xs font-bold mt-0.5 text-green-400';
+          udsLog('<span class="ok">← RX: 02 67 02 FF FF FF FF FF  [Security access granted ✅]</span>');
+        } else {
+          udsLog('<span class="err">← RX: 03 7F 27 36 FF FF FF FF  [NRC: exceededNumberOfAttempts — 10min lockout]</span>');
+        }
+      }, 100);
+    },
+    readSpeed: () => {
+      const v = Math.round(udsSpeed * 10);
+      const h = v.toString(16).padStart(4,'0').toUpperCase();
+      udsLog('<span class="cmd">→ TX: 03 22 10 01 FF FF FF FF</span>');
+      setTimeout(() => {
+        udsLog(`<span class="ok">← RX: 05 62 10 01 ${h.match(/.{2}/g).join(' ')} FF  [Speed=${udsSpeed} km/h]</span>`);
+        document.getElementById('uds-speed-did').textContent = udsSpeed.toFixed(1) + ' km/h';
+      }, 80);
+    },
+    writeSpeed: () => {
+      if (!udsSecured) {
+        udsLog('<span class="err">← RX: 03 7F 2E 33 FF FF FF FF  [NRC: securityAccessDenied]</span>');
+        return;
+      }
+      const newSpeed = 120.0;
+      const v = Math.round(newSpeed * 10);
+      const h = v.toString(16).padStart(4,'0').toUpperCase();
+      udsLog(`<span class="cmd">→ TX: 05 2E 20 01 ${h.match(/.{2}/g).join(' ')} FF</span>`);
+      setTimeout(() => {
+        udsSpeed = newSpeed;
+        udsLog('<span class="ok">← RX: 03 6E 20 01 FF FF FF FF  [WriteDataByIdentifier OK — DID 0x2001 updated]</span>');
+        document.getElementById('uds-speed-did').textContent = newSpeed + ' km/h';
+      }, 100);
+    },
+    startRoutine: () => {
+      if (!udsSecured) {
+        udsLog('<span class="err">← RX: 03 7F 31 33 FF FF FF FF  [NRC: securityAccessDenied]</span>');
+        return;
+      }
+      udsLog('<span class="cmd">→ TX: 04 31 01 01 00 FF FF FF  [startRoutine 0x0100: SpeedSensor SelfTest]</span>');
+      setTimeout(() => {
+        udsLog('<span class="ok">← RX: 04 71 01 01 00 FF FF FF  [Routine started]</span>');
+        setTimeout(() => {
+          udsLog('<span class="cmd">→ TX: 04 31 03 01 00 FF FF FF  [requestRoutineResults]</span>');
+          setTimeout(() => {
+            udsLog('<span class="ok">← RX: 05 71 03 01 00 00 FF FF  [Routine PASSED ✅ — Result=0x00]</span>');
+          }, 80);
+        }, 600);
+      }, 80);
+    },
+    readDtc: () => {
+      udsLog('<span class="cmd">→ TX: 03 19 02 FF FF FF FF FF  [reportDTCByStatusMask, mask=0xFF]</span>');
+      setTimeout(() => {
+        if (udsDtcs.length === 0) {
+          udsLog('<span class="ok">← RX: 02 59 02 FF FF FF FF FF  [No DTCs stored]</span>');
+        } else {
+          const dtcStr = udsDtcs.map(d => d.hex).join(' ');
+          udsLog(`<span class="ok">← RX: ${udsDtcs.length} DTC(s): ${dtcStr}  [P0500 SpeedSensor fault]</span>`);
+        }
+      }, 80);
+    },
+    clearDtc: () => {
+      udsLog('<span class="cmd">→ TX: 04 14 FF FF FF FF FF FF  [clearDiagnosticInformation, group=0xFFFFFF]</span>');
+      setTimeout(() => {
+        udsDtcs = [];
+        document.getElementById('uds-dtc-count').textContent = '0';
+        udsLog('<span class="ok">← RX: 01 54 FF FF FF FF FF FF  [All DTCs cleared ✅]</span>');
+      }, 200);
+    },
+    ecuReset: () => {
+      udsLog('<span class="cmd">→ TX: 02 11 01 FF FF FF FF FF  [ecuReset: hardReset]</span>');
+      setTimeout(() => {
+        udsLog('<span class="ok">← RX: 02 51 01 FF FF FF FF FF  [ECU resetting…]</span>');
+        udsSession = 'DEFAULT';
+        udsSecured = false;
+        udsSeed = null;
+        udsAttempts = 0;
+        document.getElementById('uds-session').textContent = 'DEFAULT (01)';
+        document.getElementById('uds-security').textContent = 'LOCKED 🔒';
+        document.getElementById('uds-security').className = 'text-xs font-bold mt-0.5 text-red-400';
+        setTimeout(() => udsLog('<span class="info">[UDS] ECU restarted — Default session active</span>'), 600);
+      }, 100);
+    }
+  };
+  if (actions[action]) actions[action]();
+}
+
+/* ──────────────────────────────────────────── */
+/* MODULE 5 — LIN Stack                         */
+/* ──────────────────────────────────────────── */
+let linInterval = null;
+let linFrameIdx = 0;
+let linWindowPos = 0;
+let linFanSpeed = 0;
+let linFrameCount = 0;
+
+const linFrames = [
+  { name: 'WindowPos', pid: '0x01', rowId: 'lin-row-0', period: 20,  counter: 0 },
+  { name: 'FanSpeed',  pid: '0x02', rowId: 'lin-row-1', period: 20,  counter: 0 },
+  { name: 'MotorTemp', pid: '0x03', rowId: 'lin-row-2', period: 100, counter: 0 },
+];
+
+function linLog(msg) {
+  const el = document.getElementById('lin-log');
+  el.innerHTML += `<div>${msg}</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function startLIN() {
+  if (linInterval) return;
+  linLog('<span class="ok">[LIN] Scheduler started — 20kbit/s, enhanced checksum</span>');
+  document.getElementById('lin-master-state').textContent = 'ACTIVE';
+  linInterval = setInterval(linTick, 200);
+}
+
+function stopLIN() {
+  clearInterval(linInterval); linInterval = null;
+  document.getElementById('lin-master-state').textContent = 'IDLE';
+  document.getElementById('lin-bus-anim').style.width = '0%';
+  document.getElementById('lin-frame-overlay').textContent = '';
+  linLog('[LIN] Scheduler stopped');
+  linFrames.forEach(f => { document.getElementById(f.rowId).textContent = '—'; });
+}
+
+function injectLINError() {
+  linLog('<span class="err">[LIN] ⚠ Checksum error injected on WindowPos frame!</span>');
+  linLog('<span class="err">[LIN] No-response timeout detected — SlaveError reported</span>');
+  document.getElementById('lin-row-0').innerHTML = '<span class="text-red-400">ERR</span>';
+}
+
+function setWindowPos(v) { linWindowPos = parseInt(v); document.getElementById('slave1-val').textContent = `Pos: ${v}%`; }
+function setFanSpeed(v) { linFanSpeed = parseInt(v); document.getElementById('slave2-val').textContent = `Fan: ${v}%`; }
+
+function linTick() {
+  linFrameCount++;
+  const tickMs = linFrameCount * 20;
+
+  linFrames.forEach((f, fi) => {
+    f.counter += 20;
+    if (f.counter >= f.period) {
+      f.counter = 0;
+      /* Animate bus */
+      document.getElementById('lin-bus-anim').style.width = '100%';
+      document.getElementById('lin-frame-overlay').textContent = `BREAK + SYNC + ${f.pid}`;
+      let data = [];
+      let resp = '';
+      if (fi === 0) { data = [linWindowPos & 0xFF, 0x00]; resp = `${linWindowPos}%`; }
+      else if (fi === 1) { data = [linFanSpeed & 0xFF, 0x00]; resp = `${linFanSpeed}%`; }
+      else { const temp = 40 + Math.floor(Math.random() * 20); data = [temp, 0x00]; resp = `${temp}°C`; }
+      const dataHex = data.map(b => b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
+      const chk = (data.reduce((s,b)=>s+b,0) & 0xFF).toString(16).padStart(2,'0').toUpperCase();
+      document.getElementById(f.rowId).innerHTML = `<span class="text-green-400">OK</span>`;
+      linLog(`<span class="ok">[LIN] ${f.name} PID:${f.pid} DATA:[${dataHex}] CHK:${chk} → ${resp}</span>`);
+      setTimeout(() => {
+        document.getElementById('lin-bus-anim').style.width = '0%';
+        document.getElementById('lin-frame-overlay').textContent = '';
+      }, 150);
+    }
+  });
+}
+
+/* ──────────────────────────────────────────── */
+/* MODULE 6 — SOME/IP Adaptive                  */
+/* ──────────────────────────────────────────── */
+let serviceOffered = false;
+let clientFound = false;
+let eventSubscribed = false;
+let someipEventInterval = null;
+let eventsRcvd = 0;
+let eventsSent = 0;
+let subscribers = 0;
+let someipSpeed = 87.3;
+
+function someipLog(msg) {
+  const el = document.getElementById('someip-log');
+  el.innerHTML += `<div>${msg}</div>`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function animatePacket(direction, label) {
+  document.getElementById('net-label').textContent = label;
+  const pkUp = document.getElementById('pkt-up');
+  const pkDn = document.getElementById('pkt-down');
+  if (direction === 'up') {
+    pkUp.style.height = '100%'; pkUp.style.bottom = '0';
+    setTimeout(() => { pkUp.style.height = '0%'; }, 300);
+  } else {
+    pkDn.style.height = '100%'; pkDn.style.top = '0';
+    setTimeout(() => { pkDn.style.height = '0%'; }, 300);
+  }
+  setTimeout(() => { document.getElementById('net-label').textContent = '—'; }, 400);
+}
+
+function offerService() {
+  serviceOffered = true;
+  document.getElementById('server-offer-status').textContent = 'Offered ✅';
+  document.getElementById('server-offer-status').className = 'font-mono text-green-400';
+  document.getElementById('server-status-dot').className = 'w-2 h-2 rounded-full bg-green-400 pulse';
+  someipLog('[SD] → Multicast: SOME/IP-SD OfferService — ServiceID:1001 InstanceID:1 ver:1.0');
+  someipLog('[AP] SpeedService.OfferService() called — listening on :30000');
+  animatePacket('down', 'SD Offer');
+  setTimeout(() => someipLog('<span class="ok">[SD] ✅ Service offer acknowledged on network</span>'), 300);
+}
+
+function stopOffer() {
+  serviceOffered = false; clientFound = false; eventSubscribed = false;
+  clearInterval(someipEventInterval); someipEventInterval = null;
+  document.getElementById('server-offer-status').textContent = 'Not offered';
+  document.getElementById('server-offer-status').className = 'font-mono text-[var(--muted-foreground)]';
+  document.getElementById('server-status-dot').className = 'w-2 h-2 rounded-full bg-[var(--muted-foreground)] pulse';
+  document.getElementById('client-found').textContent = 'No';
+  document.getElementById('client-found').className = 'font-mono text-[var(--muted-foreground)]';
+  document.getElementById('client-status-dot').className = 'w-2 h-2 rounded-full bg-[var(--muted-foreground)]';
+  subscribers = 0;
+  document.getElementById('server-subscribers').textContent = '0';
+  someipLog('[AP] StopOfferService() called — service withdrawn from network');
+  animatePacket('down', 'SD Stop');
+}
+
+function findService() {
+  if (!serviceOffered) { someipLog('<span class="err">[SD] Find sent but no server offering this service</span>'); animatePacket('up', 'SD Find'); return; }
+  someipLog('[SD] → Multicast: SOME/IP-SD FindService — ServiceID:1001');
+  animatePacket('up', 'SD Find');
+  setTimeout(() => {
+    someipLog('<span class="ok">[SD] ← Unicast: SOME/IP-SD OfferService received from 192.168.1.10:30000</span>');
+    clientFound = true;
+    document.getElementById('client-found').textContent = 'Yes ✅';
+    document.getElementById('client-found').className = 'font-mono text-green-400';
+    document.getElementById('client-status-dot').className = 'w-2 h-2 rounded-full bg-[var(--primary)]';
+    animatePacket('down', 'SD Response');
+    setTimeout(() => someipLog('[AP] SpeedServiceProxy connected to 192.168.1.10 — proxy ready'), 300);
+  }, 400);
+}
+
+function subscribeEvent() {
+  if (!clientFound) { someipLog('<span class="err">[AP] FindService() first!</span>'); return; }
+  eventSubscribed = true; subscribers++;
+  document.getElementById('server-subscribers').textContent = subscribers;
+  someipLog('[SD] → SubscribeEventGroup: SpeedChanged (EventID:1) — queueSize=5');
+  animatePacket('up', 'Subscribe');
+  setTimeout(() => {
+    someipLog('<span class="ok">[SD] ← SubscribeAck received — subscription active</span>');
+    animatePacket('down', 'SubAck');
+    clearInterval(someipEventInterval);
+    someipEventInterval = setInterval(() => {
+      if (!eventSubscribed) return;
+      someipSpeed += (Math.random() - 0.5) * 3;
+      someipSpeed = Math.max(0, Math.min(200, someipSpeed));
+      eventsSent++; eventsRcvd++;
+      document.getElementById('server-events-sent').textContent = eventsSent;
+      document.getElementById('client-events-rcvd').textContent = eventsRcvd;
+      document.getElementById('client-last-speed').textContent = someipSpeed.toFixed(1) + ' km/h';
+      animatePacket('down', 'Event');
+      if (eventsRcvd % 3 === 0)
+        someipLog(`<span class="ok">[AP] SpeedChanged event: ${someipSpeed.toFixed(1)} km/h (seq#${eventsRcvd})</span>`);
+    }, 800);
+  }, 300);
+}
+
+function callMethod() {
+  if (!clientFound) { someipLog('<span class="err">[AP] FindService() first!</span>'); return; }
+  const reqId = Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4,'0');
+  someipLog(`[SOME/IP] → REQUEST: ServiceID=1001 MethodID=0001 SessionID=0x${reqId}`);
+  animatePacket('up', 'Request');
+  setTimeout(() => {
+    const speed = someipSpeed;
+    someipLog(`<span class="ok">[SOME/IP] ← RESPONSE: GetCurrentSpeed() = ${speed.toFixed(1)} km/h  [SessionID=0x${reqId}]</span>`);
+    document.getElementById('client-last-speed').textContent = speed.toFixed(1) + ' km/h';
+    animatePacket('down', 'Response');
+  }, 180);
+}
+
+/* ──────────────────────────────────────────── */
+/* INITIALIZATION                               */
+/* ──────────────────────────────────────────── */
+renderTaskList();
+renderGantt();
+renderNvmBlocks();
+</script>
+</body>
+</html>
